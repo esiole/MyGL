@@ -1,36 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using OpenTK;
-using OpenTK.Graphics;
+﻿using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Input;
+using System;
 
 namespace MyGL
 {
     public class Shader : IDisposable
     {
-        private bool disposedValue = false;
-        public int Handle { get; private set; }
+        private bool isDisposed = false;
+        private int Handle { get; set; }
 
-        public Shader(string VertexShaderSource, string FragmentShaderSource)
+        public Shader(IShaderSource source) : this(source.VertexShaderSource, source.FragmentShaderSource) { }
+
+        public Shader(string vertexShaderSource, string fragmentShaderSource)
         {
             int VertexShader = GL.CreateShader(ShaderType.VertexShader);
-            GL.ShaderSource(VertexShader, VertexShaderSource);
+            GL.ShaderSource(VertexShader, vertexShaderSource);
             int FragmentShader = GL.CreateShader(ShaderType.FragmentShader);
-            GL.ShaderSource(FragmentShader, FragmentShaderSource);
+            GL.ShaderSource(FragmentShader, fragmentShaderSource);
 
             GL.CompileShader(VertexShader);
             string infoLogVert = GL.GetShaderInfoLog(VertexShader);
-            if (infoLogVert != System.String.Empty)
-                System.Console.WriteLine(infoLogVert);
+            if (infoLogVert != string.Empty)
+                throw new ShaderCompileException("Error compile vertex shader.");
             GL.CompileShader(FragmentShader);
             string infoLogFrag = GL.GetShaderInfoLog(FragmentShader);
-            if (infoLogFrag != System.String.Empty)
-                System.Console.WriteLine(infoLogFrag);
+            if (infoLogFrag != string.Empty)
+                throw new ShaderCompileException("Error compile fragment shader.");
 
             Handle = GL.CreateProgram();
             GL.AttachShader(Handle, VertexShader);
@@ -81,26 +76,23 @@ namespace MyGL
             GL.Uniform1(matrixHandle, vec);
         }
 
-        private void ReleaseHandle()
+        ~Shader()
         {
-            if (!disposedValue)
-            {
-                GL.DeleteProgram(Handle);
-                disposedValue = true;
-            }
+            Dispose(false);
         }
 
         public void Dispose()
         {
-            ReleaseHandle();
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        ~Shader()
+        protected virtual void Dispose(bool fromDisposeMethod)
         {
-            if (GraphicsContext.CurrentContext != null && !GraphicsContext.CurrentContext.IsDisposed)
+            if (!isDisposed)
             {
-                ReleaseHandle();
+                GL.DeleteProgram(Handle);
+                isDisposed = true;
             }
         }
     }

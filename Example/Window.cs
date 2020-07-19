@@ -16,104 +16,6 @@ namespace Example
 {
     public class Window : System.Windows.Forms.Form
     {
-        private string VertexShaderSource = @"
-            #version 330 core
-
-            layout (location = 0) in vec3 aPosition;
-            layout (location = 1) in vec3 aColor;
-            layout (location = 2) in vec3 aNormal;
-            
-
-            uniform mat4 model;
-            uniform mat4 view;
-            uniform mat4 projection;
-            
-            varying vec3 FragPos;
-            varying vec3 Color;
-            varying vec3 Normal;
-            
-            void main()
-            {
-                gl_Position = projection * view * model * vec4(aPosition, 1.0);
-                Color = aColor;
-                Normal = aNormal * mat3(transpose(inverse(model)));
-                FragPos = vec3(model * vec4(aPosition, 1.0));
-            }
-        ";
-        private string FragmentShaderSource = @"
-            #version 330 core
-
-            struct Material 
-            {
-                vec3 ambient;
-                vec3 diffuse;
-                vec3 specular;
-                float shininess;
-            };
-
-            struct Light 
-            {
-                vec3 ambient;
-                vec3 diffuse;
-                vec3 specular;
-                vec3 position;
-
-                // attenuation
-                float constant;
-                float linear;
-                float quadratic;
-
-                // for spotlight
-                float isSpotlight;
-                vec3 direction;
-                float cutOff;
-                float outerCutOff;
-            };
-
-            varying vec3 Color; 
-            varying vec3 Normal;
-            varying vec3 FragPos;
-
-            uniform Material material;
-            uniform Light light;
-            uniform vec3 viewPos;
-
-            void main()
-            {
-                vec3 ambient = light.ambient * material.ambient;
-
-                vec3 norm = normalize(Normal);
-                vec3 lightDir = normalize(light.position - FragPos);
-                float diff = max(dot(norm, lightDir), 0.0);
-                vec3 diffuse = light.diffuse * (diff * material.diffuse);       
-
-                vec3 viewDir = normalize(viewPos - FragPos);
-                vec3 reflectDir = reflect(-lightDir, norm);
-                float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-                vec3 specular = light.specular * (spec * material.specular);
-
-                float theta = dot(lightDir, normalize(-light.direction));
-                float epsilon = light.cutOff - light.outerCutOff;
-                float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
-
-                float distance = length(light.position - FragPos);
-                float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
-
-                if(light.isSpotlight > 0.0)
-                {
-                    diffuse  *= intensity;
-                    specular *= intensity;
-                }
-
-                ambient  *= attenuation;
-                diffuse  *= attenuation;
-                specular *= attenuation;
-                    
-                vec3 result = (ambient + diffuse + specular) * Color;
-
-                gl_FragColor = vec4(result, 1.0f);
-            }
-        ";
         private bool isLoad = false;                // загружен ли холст
         private Point mouse;                        // координаты мышки
         private bool isMove = false;                // начато ли вращение
@@ -147,26 +49,26 @@ namespace Example
 
 
 
-        private OpenTK.GLControl Canvas;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.ComboBox comboBox2;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox textBox6;
-        private System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label11;
+        private GLControl Canvas;
+        private Label label1;
+        private ComboBox comboBox1;
+        private Label label2;
+        private Label label3;
+        private Label label4;
+        private Label label5;
+        private TextBox textBox1;
+        private TextBox textBox2;
+        private TextBox textBox3;
+        private Label label6;
+        private Label label7;
+        private ComboBox comboBox2;
+        private Label label8;
+        private TextBox textBox6;
+        private TextBox textBox5;
+        private TextBox textBox4;
+        private Label label9;
+        private Label label10;
+        private Label label11;
 
 
 
@@ -397,6 +299,29 @@ namespace Example
             textBox4.Text = "0,0";
             textBox5.Text = "-0,5";
             textBox6.Text = "0,5";
+
+
+
+            Controls.Add(Canvas);
+            Controls.Add(label1);
+            Controls.Add(label2);
+            Controls.Add(label3);
+            Controls.Add(label4);
+            Controls.Add(label5);
+            Controls.Add(label6);
+            Controls.Add(label7);
+            Controls.Add(label8);
+            Controls.Add(label9);
+            Controls.Add(label10);
+            Controls.Add(label11);
+            Controls.Add(comboBox1);
+            Controls.Add(comboBox2);
+            Controls.Add(textBox1);
+            Controls.Add(textBox2);
+            Controls.Add(textBox3);
+            Controls.Add(textBox4);
+            Controls.Add(textBox5);
+            Controls.Add(textBox6);
         }
 
         private void Canvas_Load(object sender, EventArgs e)
@@ -404,7 +329,7 @@ namespace Example
             GL.ClearColor(0.59f, 0.59f, 0.59f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
 
-            shader = new Shader(VertexShaderSource, FragmentShaderSource);
+            shader = new Shader(new PhongShaderSource());
             CameraPos = new Vector3(-1.0f, -1.0f, 1.0f);
             LightPos = new Vector3(0.0f, -0.5f, 0.5f);
             Light = new Cube(LightPos, 0.05f, new Vector3(1.0f, 1.0f, 1.0f));

@@ -49,7 +49,11 @@
   <ItemGroup>
     <Compile Include="Drawing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Shaders\Sources\BasicShaderSource.cs" />
+    <Compile Include="Shaders\IShaderSource.cs" />
+    <Compile Include="Shaders\Sources\PhongShaderSource.cs" />
     <Compile Include="Shaders\Shader.cs" />
+    <Compile Include="Shaders\ShaderCompileException.cs" />
     <Compile Include="Shapes\Cone.cs" />
     <Compile Include="Shapes\CoordAxis.cs" />
     <Compile Include="Shapes\Cube.cs" />
