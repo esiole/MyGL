@@ -82,8 +82,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MyGL\MyGL\MyGL.csproj">
-      <Project>{75fcc467-fab9-4203-b616-c73f47423a1a}</Project>
+    <ProjectReference Include="..\MyGL\MyGL.csproj">
+      <Project>{6deba29d-a8d1-4a4e-ba82-a74533a0acf0}</Project>
       <Name>MyGL</Name>
     </ProjectReference>
   </ItemGroup>
