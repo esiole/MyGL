@@ -13,7 +13,7 @@ namespace MyGL
 {
     public class Cylinder : Shape
     {
-        public Cylinder(Vector3 CenterBottom, float Radius, float Height, Material material) : base(9, 3, material)
+        public Cylinder(Vector3 CenterBottom, float Radius, float Height, Material material, Matrix4 model) : base(9, 3, material, model)
         {
             Vector3[] CylinderCoord = Drawing.Cylinder(CenterBottom, Radius, Height);
             Vector3[] CylinderColor = new Vector3[CylinderCoord.Length];
@@ -54,7 +54,7 @@ namespace MyGL
             CreateBuffers(new Vector3[][] { CylinderCoord, CylinderColor, CylinderNormals, BottomCoord, BottomColor, BottomNormals, HeadCoord, HeadColor, HeadNormals });
         }
 
-        public void Draw()
+        public override void Draw()
         {
             VAO[0].Draw(PrimitiveType.TriangleStrip);
             VAO[1].Draw(PrimitiveType.TriangleFan);

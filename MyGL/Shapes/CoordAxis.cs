@@ -13,7 +13,7 @@ namespace MyGL
 {
     public class CoordAxis : Shape
     {
-        public CoordAxis(float Length, Material material) : base(3, 1, material)
+        public CoordAxis(float Length, Material material, Matrix4 model) : base(3, 1, material, model)
         {
             Vector3[] AxisCoord =
             {
@@ -42,7 +42,7 @@ namespace MyGL
             CreateBuffers(new Vector3[][] { AxisCoord, AxisColor, AxisNormal });
         }
 
-        public void Draw()
+        public override void Draw()
         {
             foreach (VertexArrayObject element in VAO)
             {

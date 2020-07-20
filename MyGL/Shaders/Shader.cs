@@ -119,5 +119,25 @@ namespace MyGL
             SetUniform1("light.linear", parameters.Linear);
             SetUniform1("light.quadratic", parameters.Quadratic);
         }
+
+        public void SetViewMatrix(Matrix4 view)
+        {
+            SetUniformMatrix4("view", false, view);
+        }
+
+        public void SetProjectionMatrix(Matrix4 projection)
+        {
+            SetUniformMatrix4("projection", false, projection);
+        }
+
+        public void SetModelMatrix(Matrix4 model)
+        {
+            SetUniformMatrix4("model", false, model);
+        }
+
+        public void SetCameraPos(Vector3 cameraPos)
+        {
+            SetUniform3("viewPos", cameraPos);
+        }
     }
 }

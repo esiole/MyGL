@@ -55,6 +55,7 @@
     <Compile Include="Parameters\Materials\Jade.cs" />
     <Compile Include="Parameters\Materials\YellowPlastic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scene.cs" />
     <Compile Include="Shaders\Sources\BasicShaderSource.cs" />
     <Compile Include="Shaders\IShaderSource.cs" />
     <Compile Include="Shaders\Sources\PhongShaderSource.cs" />

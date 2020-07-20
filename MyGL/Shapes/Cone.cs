@@ -13,7 +13,7 @@ namespace MyGL
 {
     public class Cone : Shape
     {
-        public Cone(Vector3 CenterBottom, float Radius, float Height, Material material) : base(6, 2, material)
+        public Cone(Vector3 CenterBottom, float Radius, float Height, Material material, Matrix4 model) : base(6, 2, material, model)
         {
             Vector3[] ConeCoord = Drawing.Cone(CenterBottom, Radius, Height);
             Vector3[] ConeColor = new Vector3[ConeCoord.Length];
@@ -42,7 +42,7 @@ namespace MyGL
             CreateBuffers(new Vector3[][] { ConeCoord, ConeColor, ConeNormals, ConeBottomCoord, ConeBottomColor, ConeBottomNormals });
         }
 
-        public void Draw()
+        public override void Draw()
         {
             foreach (VertexArrayObject element in VAO)
             {

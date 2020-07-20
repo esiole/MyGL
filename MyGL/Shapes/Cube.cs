@@ -13,7 +13,7 @@ namespace MyGL
 {
     public class Cube : Shape
     {
-        public Cube(Vector3 Center, float Side, Vector3 Color, Material material) : base(3, 1, material)
+        public Cube(Vector3 Center, float Side, Vector3 Color, Material material, Matrix4 model) : base(3, 1, material, model)
         {
             Vector3[] CubeCoord =
             {
@@ -49,7 +49,7 @@ namespace MyGL
             CreateBuffers(new Vector3[][] { CubeCoord, CubeColor, CubeNormals });
         }
 
-        public void Draw()
+        public override void Draw()
         {
             foreach (VertexArrayObject element in VAO)
             {
