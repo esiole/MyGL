@@ -24,6 +24,7 @@ namespace Example
         private float fov = 45.0f;                  // угол просмотра перспективной проекции
         private bool isOrto = false;                // выбранная проекция
         private Shader shader;                      // шейдерная программа
+        private LightingParameters light;
         private Cone Conus;
         private Cube Cube;
         private CoordAxis Axis;
@@ -329,6 +330,7 @@ namespace Example
             GL.ClearColor(0.59f, 0.59f, 0.59f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
 
+
             shader = new Shader(new PhongShaderSource());
             CameraPos = new Vector3(-1.0f, -1.0f, 1.0f);
             LightPos = new Vector3(0.0f, -0.5f, 0.5f);
@@ -342,6 +344,9 @@ namespace Example
             constant = 1.0f;
             linear = 0.35f;
             quadratic = 0.44f;
+
+            light = new LightingParameters(new Vector3(0.2f, 0.4f, 0.6f), new Vector3(0.8f, 0.9f, 0.5f), new Vector3(1.0f, 0.8f, 1.0f),
+                LightPos, LightDirection, cutOff, outerCutOff, isSpotlight, constant, linear, quadratic);
 
             Conus = new Cone(new Vector3(0.0f, 0.0f, 0.0f), 0.1f, 0.3f, new YellowPlastic());
             Cube = new Cube(new Vector3(0.0f, 0.0f, 0.15f), 0.3f, new Vector3(1.0f, 0.0f, 1.0f), new Jade());
@@ -390,17 +395,7 @@ namespace Example
             shader.SetUniformMatrix4("projection", false, projection);
             shader.SetUniform3("viewPos", CameraPos);
 
-            shader.SetUniform3("light.ambient", new Vector3(0.2f, 0.4f, 0.6f));
-            shader.SetUniform3("light.diffuse", new Vector3(0.8f, 0.9f, 0.5f));
-            shader.SetUniform3("light.specular", new Vector3(1.0f, 0.8f, 1.0f));
-            shader.SetUniform3("light.position", LightOffsetPos);
-            shader.SetUniform3("light.direction", LightDirection);
-            shader.SetUniform1("light.cutOff", cutOff);
-            shader.SetUniform1("light.outerCutOff", outerCutOff);
-            shader.SetUniform1("light.isSpotlight", isSpotlight);
-            shader.SetUniform1("light.constant", constant);
-            shader.SetUniform1("light.linear", linear);
-            shader.SetUniform1("light.quadratic", quadratic);
+            shader.SetLightingParameters(this.light, LightOffsetPos);
 
             shader.SetUniformMatrix4("model", false, cylinder);
             shader.SetMaterial(Cylinder.Material);

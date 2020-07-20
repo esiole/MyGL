@@ -104,5 +104,20 @@ namespace MyGL
             SetUniform3("material.specular", material.Specular);
             SetUniform1("material.shininess", material.Shininess);
         }
+
+        public void SetLightingParameters(LightingParameters parameters, Vector3 position)
+        {
+            SetUniform3("light.ambient", parameters.Ambient);
+            SetUniform3("light.diffuse", parameters.Diffuse);
+            SetUniform3("light.specular", parameters.Specular);
+            SetUniform3("light.position", position);
+            SetUniform3("light.direction", parameters.Direction);
+            SetUniform1("light.cutOff", parameters.CutOff);
+            SetUniform1("light.outerCutOff", parameters.OuterCutOff);
+            SetUniform1("light.isSpotlight", parameters.IsSpotlight);
+            SetUniform1("light.constant", parameters.Constant);
+            SetUniform1("light.linear", parameters.Linear);
+            SetUniform1("light.quadratic", parameters.Quadratic);
+        }
     }
 }

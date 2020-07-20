@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Drawing.cs" />
+    <Compile Include="Parameters\LightingParameters.cs" />
     <Compile Include="Parameters\Material.cs" />
     <Compile Include="Parameters\Materials\Brass.cs" />
     <Compile Include="Parameters\Materials\Bronze.cs" />
