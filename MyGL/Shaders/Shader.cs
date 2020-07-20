@@ -95,5 +95,14 @@ namespace MyGL
                 isDisposed = true;
             }
         }
+
+        // управление шейдером
+        public void SetMaterial(Material material)
+        {
+            SetUniform3("material.ambient", material.Ambient);
+            SetUniform3("material.diffuse", material.Diffuse);
+            SetUniform3("material.specular", material.Specular);
+            SetUniform1("material.shininess", material.Shininess);
+        }
     }
 }

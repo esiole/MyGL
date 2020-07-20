@@ -332,7 +332,7 @@ namespace Example
             shader = new Shader(new PhongShaderSource());
             CameraPos = new Vector3(-1.0f, -1.0f, 1.0f);
             LightPos = new Vector3(0.0f, -0.5f, 0.5f);
-            Light = new Cube(LightPos, 0.05f, new Vector3(1.0f, 1.0f, 1.0f));
+            Light = new Cube(LightPos, 0.05f, new Vector3(1.0f, 1.0f, 1.0f), new Material());
             LightDirection = new Vector3(-0.2f, 0.45f, 0.0f) - LightPos;
             cutOff = (float)Math.Cos(MathHelper.DegreesToRadians(18.5));
             outerCutOff = (float)Math.Cos(MathHelper.DegreesToRadians(29.5));
@@ -343,15 +343,15 @@ namespace Example
             linear = 0.35f;
             quadratic = 0.44f;
 
-            Conus = new Cone(new Vector3(0.0f, 0.0f, 0.0f), 0.1f, 0.3f);
-            Cube = new Cube(new Vector3(0.0f, 0.0f, 0.15f), 0.3f, new Vector3(1.0f, 0.0f, 1.0f));
-            Cylinder = new Cylinder(new Vector3(0.0f, 0.0f, 0.0f), 0.1f, 0.3f);
-            Axis = new CoordAxis(1.0f);
-            BottomScene = new Sheet(new Vector3(1.0f, -1.0f, 0.0f), new Vector3(1.0f, 1.0f, 0.0f), new Vector3(-1.0f, -1.0f, 0.0f), new Vector3(-1.0f, 1.0f, 0.0f));
-            Wall_1 = new Sheet(new Vector3(1.0f, 1.0f, 0.0f), new Vector3(1.0f, -1.0f, 0.0f), new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, -1.0f, 1.0f));
-            Wall_2 = new Sheet(new Vector3(-1.0f, 1.0f, 0.0f), new Vector3(1.0f, 1.0f, 0.0f), new Vector3(-1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f));
-            Wall_3 = new Sheet(new Vector3(-1.0f, -1.0f, 0.0f), new Vector3(-1.0f, 1.0f, 0.0f), new Vector3(-1.0f, -1.0f, 1.0f), new Vector3(-1.0f, 1.0f, 1.0f));
-            Wall_4 = new Sheet(new Vector3(1.0f, -1.0f, 0.0f), new Vector3(-1.0f, -1.0f, 0.0f), new Vector3(1.0f, -1.0f, 1.0f), new Vector3(-1.0f, -1.0f, 1.0f));
+            Conus = new Cone(new Vector3(0.0f, 0.0f, 0.0f), 0.1f, 0.3f, new YellowPlastic());
+            Cube = new Cube(new Vector3(0.0f, 0.0f, 0.15f), 0.3f, new Vector3(1.0f, 0.0f, 1.0f), new Jade());
+            Cylinder = new Cylinder(new Vector3(0.0f, 0.0f, 0.0f), 0.1f, 0.3f, new Bronze());
+            Axis = new CoordAxis(1.0f, new Material());
+            BottomScene = new Sheet(new Vector3(1.0f, -1.0f, 0.0f), new Vector3(1.0f, 1.0f, 0.0f), new Vector3(-1.0f, -1.0f, 0.0f), new Vector3(-1.0f, 1.0f, 0.0f), new Brass());
+            Wall_1 = new Sheet(new Vector3(1.0f, 1.0f, 0.0f), new Vector3(1.0f, -1.0f, 0.0f), new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, -1.0f, 1.0f), new Brass());
+            Wall_2 = new Sheet(new Vector3(-1.0f, 1.0f, 0.0f), new Vector3(1.0f, 1.0f, 0.0f), new Vector3(-1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f), new Brass());
+            Wall_3 = new Sheet(new Vector3(-1.0f, -1.0f, 0.0f), new Vector3(-1.0f, 1.0f, 0.0f), new Vector3(-1.0f, -1.0f, 1.0f), new Vector3(-1.0f, 1.0f, 1.0f), new Brass());
+            Wall_4 = new Sheet(new Vector3(1.0f, -1.0f, 0.0f), new Vector3(-1.0f, -1.0f, 0.0f), new Vector3(1.0f, -1.0f, 1.0f), new Vector3(-1.0f, -1.0f, 1.0f), new Brass());
 
             isLoad = true;
         }
@@ -403,40 +403,21 @@ namespace Example
             shader.SetUniform1("light.quadratic", quadratic);
 
             shader.SetUniformMatrix4("model", false, cylinder);
-            // bronze
-            shader.SetUniform3("material.ambient", new Vector3(0.2125f, 0.1275f, 0.054f));
-            shader.SetUniform3("material.diffuse", new Vector3(0.714f, 0.4284f, 0.18144f));
-            shader.SetUniform3("material.specular", new Vector3(0.393548f, 0.271906f, 0.166721f));
-            shader.SetUniform1("material.shininess", 32.0f);
+            shader.SetMaterial(Cylinder.Material);
             Cylinder.Draw();
             shader.SetUniformMatrix4("model", false, conus);
-            // yellow plastic
-            shader.SetUniform3("material.ambient", new Vector3(0.0f, 0.0f, 0.0f));
-            shader.SetUniform3("material.diffuse", new Vector3(0.5f, 0.5f, 0.0f));
-            shader.SetUniform3("material.specular", new Vector3(0.60f, 0.60f, 0.50f));
-            shader.SetUniform1("material.shininess", 32.0f);
+            shader.SetMaterial(Conus.Material);
             Conus.Draw();
             shader.SetUniformMatrix4("model", false, cube);
-            // нефрит
-            shader.SetUniform3("material.ambient", new Vector3(0.135f, 0.2225f, 0.1575f));
-            shader.SetUniform3("material.diffuse", new Vector3(0.54f, 0.89f, 0.63f));
-            shader.SetUniform3("material.specular", new Vector3(0.316228f, 0.316228f, 0.316228f));
-            shader.SetUniform1("material.shininess", 32.0f);
+            shader.SetMaterial(Cube.Material);
             Cube.Draw();
             shader.SetUniformMatrix4("model", false, model);
-            // brass
-            shader.SetUniform3("material.ambient", new Vector3(0.329412f, 0.223529f, 0.027451f));
-            shader.SetUniform3("material.diffuse", new Vector3(0.780392f, 0.568627f, 0.113725f));
-            shader.SetUniform3("material.specular", new Vector3(0.992157f, 0.941176f, 0.807843f));
-            shader.SetUniform1("material.shininess", 32.0f);
+            shader.SetMaterial(BottomScene.Material);
             BottomScene.Draw();
             Wall_1.Draw();
             Wall_2.Draw();
 
-            shader.SetUniform3("material.ambient", new Vector3(1.0f, 1.0f, 1.0f));
-            shader.SetUniform3("material.diffuse", new Vector3(1.0f, 1.0f, 1.0f));
-            shader.SetUniform3("material.specular", new Vector3(1.0f, 1.0f, 1.0f));
-            shader.SetUniform1("material.shininess", 32.0f);
+            shader.SetMaterial(Light.Material);
             shader.SetUniform3("light.ambient", new Vector3(1.0f, 1.0f, 1.0f));
             shader.SetUniform3("light.diffuse", new Vector3(1.0f, 1.0f, 1.0f));
             shader.SetUniform3("light.specular", new Vector3(1.0f, 1.0f, 1.0f));

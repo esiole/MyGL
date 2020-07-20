@@ -48,6 +48,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Drawing.cs" />
+    <Compile Include="Parameters\Material.cs" />
+    <Compile Include="Parameters\Materials\Brass.cs" />
+    <Compile Include="Parameters\Materials\Bronze.cs" />
+    <Compile Include="Parameters\Materials\Jade.cs" />
+    <Compile Include="Parameters\Materials\YellowPlastic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shaders\Sources\BasicShaderSource.cs" />
     <Compile Include="Shaders\IShaderSource.cs" />

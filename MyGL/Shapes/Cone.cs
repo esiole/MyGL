@@ -13,7 +13,7 @@ namespace MyGL
 {
     public class Cone : Shape
     {
-        public Cone(Vector3 CenterBottom, float Radius, float Height) : base(6, 2)
+        public Cone(Vector3 CenterBottom, float Radius, float Height, Material material) : base(6, 2, material)
         {
             Vector3[] ConeCoord = Drawing.Cone(CenterBottom, Radius, Height);
             Vector3[] ConeColor = new Vector3[ConeCoord.Length];

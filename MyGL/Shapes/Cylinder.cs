@@ -13,7 +13,7 @@ namespace MyGL
 {
     public class Cylinder : Shape
     {
-        public Cylinder(Vector3 CenterBottom, float Radius, float Height) : base(9, 3)
+        public Cylinder(Vector3 CenterBottom, float Radius, float Height, Material material) : base(9, 3, material)
         {
             Vector3[] CylinderCoord = Drawing.Cylinder(CenterBottom, Radius, Height);
             Vector3[] CylinderColor = new Vector3[CylinderCoord.Length];

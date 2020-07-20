@@ -15,11 +15,13 @@ namespace MyGL
     {
         protected VertexBufferObject[] VBO { get; set; }
         protected VertexArrayObject[] VAO { get; set; }
+        public Material Material { get; private set; }
 
-        public Shape(int CountVBO, int CountVAO)
+        public Shape(int CountVBO, int CountVAO, Material material)
         {
             VBO = new VertexBufferObject[CountVBO];
             VAO = new VertexArrayObject[CountVAO];
+            Material = material;
         }
 
         protected void CreateBuffers(Vector3[][] Value)

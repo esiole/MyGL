@@ -13,7 +13,7 @@ namespace MyGL
 {
     public class Cube : Shape
     {
-        public Cube(Vector3 Center, float Side, Vector3 Color) : base(3, 1)
+        public Cube(Vector3 Center, float Side, Vector3 Color, Material material) : base(3, 1, material)
         {
             Vector3[] CubeCoord =
             {

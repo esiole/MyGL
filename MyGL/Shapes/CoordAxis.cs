@@ -13,7 +13,7 @@ namespace MyGL
 {
     public class CoordAxis : Shape
     {
-        public CoordAxis(float Length) : base(3, 1)
+        public CoordAxis(float Length, Material material) : base(3, 1, material)
         {
             Vector3[] AxisCoord =
             {
