@@ -16,7 +16,7 @@ namespace MyGL
         protected VertexBufferObject[] VBO { get; set; }
         protected VertexArrayObject[] VAO { get; set; }
         public Material Material { get; private set; }
-        public Matrix4 Model { get; private set; }
+        public Matrix4 Model { get; set; }
 
         public Shape(int CountVBO, int CountVAO, Material material, Matrix4 model)
         {

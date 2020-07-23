@@ -11,6 +11,7 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using MyGL;
+using System.Globalization;
 
 namespace Example 
 {
@@ -39,17 +40,9 @@ namespace Example
         private Vector3 LightOffsetPos;             // смещение положения источника света
         private Scene GraphicScene;
 
-
-
         private GLControl Canvas;
         private ComboBox comboBox1;
-        private TextBox textBox1;
-        private TextBox textBox2;
-        private TextBox textBox3;
         private ComboBox comboBox2;
-        private TextBox textBox6;
-        private TextBox textBox5;
-        private TextBox textBox4;
 
         public const string WindowFontName = "Microsoft Sans Serif";
         public const Single WindowFontSize = 14F;
@@ -75,24 +68,6 @@ namespace Example
             };
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
 
-            textBox1 = new TextBox()
-            {
-                Dock = DockStyle.Fill,
-            };
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-
-            textBox2 = new TextBox()
-            {
-                Dock = DockStyle.Fill,
-            };
-            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
-
-            textBox3 = new TextBox()
-            {
-                Dock = DockStyle.Fill,
-            };
-            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
-
             comboBox2 = new ComboBox()
             {
                 Dock = DockStyle.Fill,
@@ -100,23 +75,13 @@ namespace Example
             };
             this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
 
-            textBox4 = new TextBox()
-            {
-                Dock = DockStyle.Fill,
-            };
-            this.textBox4.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
+            var textBox1 = CreateTextBox(new Action<float>(value => light.SetDirectionVector(x: value)));
+            var textBox2 = CreateTextBox(new Action<float>(value => light.SetDirectionVector(y: value)));
+            var textBox3 = CreateTextBox(new Action<float>(value => light.SetDirectionVector(z: value)));
 
-            textBox5 = new TextBox()
-            {
-                Dock = DockStyle.Fill,
-            };
-            this.textBox5.TextChanged += new System.EventHandler(this.textBox5_TextChanged);
-
-            textBox6 = new TextBox()
-            {
-                Dock = DockStyle.Fill,
-            };
-            this.textBox6.TextChanged += new System.EventHandler(this.textBox6_TextChanged);
+            var textBox4 = CreateTextBox(new Action<float>(value => light.SetLightOffsetPos(x: value)));
+            var textBox5 = CreateTextBox(new Action<float>(value => light.SetLightOffsetPos(y: value)));
+            var textBox6 = CreateTextBox(new Action<float>(value => light.SetLightOffsetPos(z: value)));
 
             var table = new TableLayoutPanel();
             table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 80));
@@ -168,7 +133,6 @@ namespace Example
         private TableLayoutPanel CreateTableLayoutForCoord(string headText, TextBox xBox, TextBox yBox, TextBox zBox)
         {
             var label = CreateLabel(headText);
-
             var tableCoord = new TableLayoutPanel();
             tableCoord.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
             tableCoord.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
@@ -176,7 +140,6 @@ namespace Example
             tableCoord.RowStyles.Add(new RowStyle(SizeType.Percent, 25));
             tableCoord.RowStyles.Add(new RowStyle(SizeType.Percent, 25));
             tableCoord.RowStyles.Add(new RowStyle(SizeType.Percent, 25));
-
             tableCoord.Controls.Add(label, 0, 0);
             tableCoord.SetColumnSpan(label, 2);
             tableCoord.Controls.Add(CreateLabel("X:"), 0, 1);
@@ -185,9 +148,7 @@ namespace Example
             tableCoord.Controls.Add(yBox, 1, 2);
             tableCoord.Controls.Add(CreateLabel("Z:"), 0, 3);
             tableCoord.Controls.Add(zBox, 1, 3);
-
             tableCoord.Dock = DockStyle.Fill;
-
             return tableCoord;
         }
 
@@ -199,10 +160,31 @@ namespace Example
             tableBox.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
             tableBox.Controls.Add(CreateLabel(headText), 0, 0);
             tableBox.Controls.Add(box, 0, 1);
-
             tableBox.Dock = DockStyle.Fill;
-
             return tableBox;
+        }
+
+        private TextBox CreateTextBox(Action<float> changeLightingVector)
+        {
+            var textBox = new TextBox()
+            {
+                Dock = DockStyle.Fill,
+            };
+            textBox.TextChanged += (sender, e) =>
+            {
+                float value;
+                try
+                {
+                    value = float.Parse((sender as TextBox).Text);
+
+                }
+                catch
+                {
+                    value = float.Parse((sender as TextBox).Text, CultureInfo.InvariantCulture);
+                }
+                if (light != null) changeLightingVector(value);
+            };
+            return textBox;
         }
 
         private void Canvas_Load(object sender, EventArgs e)
@@ -229,7 +211,7 @@ namespace Example
             var linear = 0.35f;
             var quadratic = 0.44f;
 
-            light = new LightingParameters(ambient, diffuse, specular, LightPos, LightDirection, cutOff, outerCutOff, 
+            light = new LightingParameters(ambient, diffuse, specular, LightPos, LightDirection, LightOffsetPos, cutOff, outerCutOff, 
                 isSpotlight, constant, linear, quadratic);
 
             GraphicScene = new Scene(shader);
@@ -255,6 +237,7 @@ namespace Example
             GraphicScene.Add(Wall_2);
             GraphicScene.Add(Light);
 
+            light.ParametersChange += () => Canvas.Invalidate();
             isLoad = true;
         }
 
@@ -268,7 +251,7 @@ namespace Example
         {
             if (!isLoad) return;
             Matrix4 model = Matrix4.Identity;
-            //Matrix4 light = Matrix4.Mult(Matrix4.CreateTranslation(LightOffsetPos - LightPos), model);
+            Matrix4 light = Matrix4.Mult(Matrix4.CreateTranslation(this.light.LightOffsetPos - this.light.Position), model);
 
             Matrix4 left = Matrix4.CreateRotationX(xAxisRotation);
             Matrix4 right = Matrix4.CreateRotationY(yAxisRotation);
@@ -282,17 +265,15 @@ namespace Example
             GL.Enable(EnableCap.PointSmooth);
             GL.Enable(EnableCap.LineSmooth);
 
+            shader.SetLightingParameters(this.light, this.light.LightOffsetPos);
             GraphicScene.View = view;
             GraphicScene.Projection = projection;
             GraphicScene.CameraPos = new Vector3(-1.0f, -1.0f, 1.0f);
+            Light.Model = light;
+            //shader.SetUniform3("light.ambient", new Vector3(1.0f, 1.0f, 1.0f));
+            //shader.SetUniform3("light.diffuse", new Vector3(1.0f, 1.0f, 1.0f));
+            //shader.SetUniform3("light.specular", new Vector3(1.0f, 1.0f, 1.0f));
             GraphicScene.Draw();
-            shader.SetLightingParameters(this.light, LightOffsetPos);
-
-            shader.SetUniform3("light.ambient", new Vector3(1.0f, 1.0f, 1.0f));
-            shader.SetUniform3("light.diffuse", new Vector3(1.0f, 1.0f, 1.0f));
-            shader.SetUniform3("light.specular", new Vector3(1.0f, 1.0f, 1.0f));
-            //shader.SetUniformMatrix4("model", false, light);
-            Light.Draw();
 
             GL.Disable(EnableCap.PointSmooth);
             GL.Disable(EnableCap.LineSmooth);
@@ -355,48 +336,6 @@ namespace Example
             Canvas.Invalidate();
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                float value = float.Parse(textBox1.Text);
-                LightDirection.X = value - LightPos.X;
-                Canvas.Invalidate();
-            }
-            catch
-            {
-
-            }
-        }
-
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                float value = float.Parse(textBox2.Text);
-                LightDirection.Y = value - LightPos.Y;
-                Canvas.Invalidate();
-            }
-            catch
-            {
-
-            }
-        }
-
-        private void textBox3_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                float value = float.Parse(textBox3.Text);
-                LightDirection.Z = value - LightPos.Z;
-                Canvas.Invalidate();
-            }
-            catch
-            {
-
-            }
-        }
-
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboBox2.SelectedItem.ToString() == "Прожектор")
@@ -408,48 +347,6 @@ namespace Example
                 isSpotlight = -1.0f;
             }
             Canvas.Invalidate();
-        }
-
-        private void textBox4_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                float value = float.Parse(textBox4.Text);
-                LightOffsetPos.X = value;
-                Canvas.Invalidate();
-            }
-            catch
-            {
-
-            }
-        }
-
-        private void textBox5_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                float value = float.Parse(textBox5.Text);
-                LightOffsetPos.Y = value;
-                Canvas.Invalidate();
-            }
-            catch
-            {
-
-            }
-        }
-
-        private void textBox6_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                float value = float.Parse(textBox6.Text);
-                LightOffsetPos.Z = value;
-                Canvas.Invalidate();
-            }
-            catch
-            {
-
-            }
         }
     }
 }

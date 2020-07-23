@@ -15,6 +15,14 @@ namespace MyGL
         public Matrix4 Projection { get; set; }
         public Vector3 CameraPos { get; set; }
 
+        public Vector3 Test = new Vector3();
+        public event Action<float> XChange;
+        public void Event(float a)
+        {
+            Test.X = a;
+            if (XChange != null) XChange(a);
+        }
+
         public Scene(Shader shader/*, Matrix4 view, Matrix4 projection*/)
         {
             Shapes = new List<Shape>();
