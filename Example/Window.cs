@@ -12,6 +12,7 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using MyGL;
 using System.Globalization;
+using System.Threading;
 
 namespace Example 
 {
@@ -43,13 +44,14 @@ namespace Example
         private GLControl Canvas;
         private ComboBox comboBox1;
         private ComboBox comboBox2;
+        private ToolStripLabel status;
 
         public const string WindowFontName = "Microsoft Sans Serif";
         public const Single WindowFontSize = 14F;
 
         public Window()
         {
-            Canvas = new GLControl()
+            Canvas = new GLControl
             {
                 Dock = DockStyle.Fill,
             };
@@ -61,24 +63,23 @@ namespace Example
             this.Canvas.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Canvas_OnMouseWheel);
             this.Canvas.Resize += new System.EventHandler(this.Canvas_Resize);
 
-            comboBox1 = new ComboBox()
+            comboBox1 = new ComboBox
             {
                 Dock = DockStyle.Fill,
                 DropDownStyle = ComboBoxStyle.DropDownList,
             };
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
 
-            comboBox2 = new ComboBox()
+            comboBox2 = new ComboBox
             {
                 Dock = DockStyle.Fill,
-                DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList,
+                DropDownStyle = ComboBoxStyle.DropDownList,
             };
             this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
 
             var textBox1 = CreateTextBox(new Action<float>(value => light.SetDirectionVector(x: value)));
             var textBox2 = CreateTextBox(new Action<float>(value => light.SetDirectionVector(y: value)));
             var textBox3 = CreateTextBox(new Action<float>(value => light.SetDirectionVector(z: value)));
-
             var textBox4 = CreateTextBox(new Action<float>(value => light.SetLightOffsetPos(x: value)));
             var textBox5 = CreateTextBox(new Action<float>(value => light.SetLightOffsetPos(y: value)));
             var textBox6 = CreateTextBox(new Action<float>(value => light.SetLightOffsetPos(z: value)));
@@ -90,16 +91,23 @@ namespace Example
             table.RowStyles.Add(new RowStyle(SizeType.Percent, 25));
             table.RowStyles.Add(new RowStyle(SizeType.Percent, 25));
             table.RowStyles.Add(new RowStyle(SizeType.Percent, 25));
-
             table.Controls.Add(Canvas, 0, 0);
             table.SetRowSpan(Canvas, 4);
             table.Controls.Add(CreateTableLayoutForComboBox("Проекция:", comboBox1), 1, 0);
             table.Controls.Add(CreateTableLayoutForCoord("Направление прожектора:", textBox1, textBox2, textBox3), 1, 1);
             table.Controls.Add(CreateTableLayoutForComboBox("Источник света:", comboBox2), 1, 2);
             table.Controls.Add(CreateTableLayoutForCoord("Координаты лампы:", textBox4, textBox5, textBox6), 1, 3);
-
             table.Dock = DockStyle.Fill;
             Controls.Add(table);
+
+            var statusStrip = new StatusStrip();
+            status = new ToolStripLabel
+            {
+                Text = "Загрузка"
+            };
+            statusStrip.Items.Add(status);
+            statusStrip.RightToLeft = RightToLeft.Yes;
+            Controls.Add(statusStrip);
 
             Font = new Font(WindowFontName, WindowFontSize);
             AutoScaleMode = AutoScaleMode.None;
@@ -113,17 +121,20 @@ namespace Example
             comboBox1.SelectedIndex = 0;
             comboBox2.Items.AddRange(new string[] { "Прожектор", "Точечный" });
             comboBox2.SelectedIndex = 0;
+
+            LightPos = new Vector3(0.0f, -0.5f, 0.5f);
+
             textBox1.Text = "-0,2";
             textBox2.Text = "0,45";
             textBox3.Text = "0,0";
-            textBox4.Text = "0,0";
-            textBox5.Text = "-0,5";
-            textBox6.Text = "0,5";
+            textBox4.Text = LightPos.X.ToString();
+            textBox5.Text = LightPos.Y.ToString();
+            textBox6.Text = LightPos.Z.ToString();
         }
 
         private Label CreateLabel(string text)
         {
-            return new Label()
+            return new Label
             {
                 Dock = DockStyle.Fill,
                 Text = text,
@@ -166,23 +177,22 @@ namespace Example
 
         private TextBox CreateTextBox(Action<float> changeLightingVector)
         {
-            var textBox = new TextBox()
+            var textBox = new TextBox
             {
                 Dock = DockStyle.Fill,
             };
             textBox.TextChanged += (sender, e) =>
             {
-                float value;
                 try
                 {
-                    value = float.Parse((sender as TextBox).Text);
-
+                    float value = float.Parse((sender as TextBox).Text);
+                    if (light != null) changeLightingVector(value);
+                    status.Text = "Готово";
                 }
                 catch
                 {
-                    value = float.Parse((sender as TextBox).Text, CultureInfo.InvariantCulture);
+                    status.Text = "Введённое значение не является числом";
                 }
-                if (light != null) changeLightingVector(value);
             };
             return textBox;
         }
@@ -193,10 +203,19 @@ namespace Example
             GL.Enable(EnableCap.DepthTest);
 
 
-            shader = new Shader(new PhongShaderSource());
+            //shader = new Shader(new PhongShaderSource());
+            shader = new Shader(new UniversalShader(1, 1));
             //CameraPos = new Vector3(-1.0f, -1.0f, 1.0f);  // позиция камеры
-            LightPos = new Vector3(0.0f, -0.5f, 0.5f);
-            Light = new Cube(LightPos, 0.05f, new Vector3(1.0f, 1.0f, 1.0f), new Material(), Matrix4.Identity);
+            Light = new Cube(LightPos, 0.05f, new Vector3(1.0f, 1.0f, 1.0f), new Material(), Matrix4.Identity)
+            {
+                //IsSpotLight = true,
+                IsPointLight = true,
+            };
+            //var Light1 = new Cube(LightPos, 0.05f, new Vector3(1.0f, 1.0f, 1.0f), new Material(), Matrix4.Identity)
+            //{
+            //    //IsSpotLight = true,
+            //    IsPointLight = true,
+            //};
             LightDirection = new Vector3(-0.2f, 0.45f, 0.0f) - LightPos;
             isSpotlight = 1.0f;
             LightOffsetPos = new Vector3(0.0f, -0.5f, 0.5f);
@@ -213,6 +232,33 @@ namespace Example
 
             light = new LightingParameters(ambient, diffuse, specular, LightPos, LightDirection, LightOffsetPos, cutOff, outerCutOff, 
                 isSpotlight, constant, linear, quadratic);
+
+
+            var pointLight = new PointLight()
+            {
+                Ambient = new Vector3(0.2f, 0.4f, 0.6f),
+                Diffuse = new Vector3(0.8f, 0.9f, 0.5f),
+                Specular = new Vector3(1.0f, 0.8f, 1.0f),
+                Position = LightPos,
+                Direction = new Vector3(-0.2f, 0.45f, 0.0f) - LightPos,
+                Constant = 1.0f,
+                Linear = 0.35f,
+                Quadratic = 0.44f,
+            };
+
+            var spotLight = new SpotLight()
+            {
+                Ambient = new Vector3(0.2f, 0.4f, 0.6f),
+                Diffuse = new Vector3(0.8f, 0.9f, 0.5f),
+                Specular = new Vector3(1.0f, 0.8f, 1.0f),
+                Position = LightPos,
+                Direction = new Vector3(-0.2f, 0.45f, 0.0f) - LightPos,
+                Constant = 1.0f,
+                Linear = 0.35f,
+                Quadratic = 0.44f,
+                CutOff = (float)Math.Cos(MathHelper.DegreesToRadians(18.5)),
+                OuterCutOff = (float)Math.Cos(MathHelper.DegreesToRadians(29.5)),
+            };
 
             GraphicScene = new Scene(shader);
             Matrix4 model = Matrix4.Identity;
@@ -235,10 +281,14 @@ namespace Example
             GraphicScene.Add(BottomScene);
             GraphicScene.Add(Wall_1);
             GraphicScene.Add(Wall_2);
-            GraphicScene.Add(Light);
+            //GraphicScene.Add(Light);
+            //GraphicScene.Add(Light1);
+            GraphicScene.Add(pointLight);
+            GraphicScene.Add(spotLight);
 
             light.ParametersChange += () => Canvas.Invalidate();
             isLoad = true;
+            status.Text = "Готово";
         }
 
         private void Canvas_Resize(object sender, EventArgs e)
@@ -265,14 +315,11 @@ namespace Example
             GL.Enable(EnableCap.PointSmooth);
             GL.Enable(EnableCap.LineSmooth);
 
-            shader.SetLightingParameters(this.light, this.light.LightOffsetPos);
+            //shader.SetLightingParameters(this.light, this.light.LightOffsetPos);
             GraphicScene.View = view;
             GraphicScene.Projection = projection;
             GraphicScene.CameraPos = new Vector3(-1.0f, -1.0f, 1.0f);
             Light.Model = light;
-            //shader.SetUniform3("light.ambient", new Vector3(1.0f, 1.0f, 1.0f));
-            //shader.SetUniform3("light.diffuse", new Vector3(1.0f, 1.0f, 1.0f));
-            //shader.SetUniform3("light.specular", new Vector3(1.0f, 1.0f, 1.0f));
             GraphicScene.Draw();
 
             GL.Disable(EnableCap.PointSmooth);

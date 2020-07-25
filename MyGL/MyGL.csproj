@@ -48,12 +48,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Drawing.cs" />
+    <Compile Include="Parameters\LightSource.cs" />
+    <Compile Include="Parameters\PointLight.cs" />
     <Compile Include="Parameters\LightingParameters.cs" />
+    <Compile Include="Parameters\DirectionLight.cs" />
     <Compile Include="Parameters\Material.cs" />
     <Compile Include="Parameters\Materials\Brass.cs" />
     <Compile Include="Parameters\Materials\Bronze.cs" />
     <Compile Include="Parameters\Materials\Jade.cs" />
     <Compile Include="Parameters\Materials\YellowPlastic.cs" />
+    <Compile Include="Parameters\Parameters.cs" />
+    <Compile Include="Parameters\SpotLight.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="Shaders\Sources\BasicShaderSource.cs" />
@@ -61,6 +66,7 @@
     <Compile Include="Shaders\Sources\PhongShaderSource.cs" />
     <Compile Include="Shaders\Shader.cs" />
     <Compile Include="Shaders\ShaderCompileException.cs" />
+    <Compile Include="Shaders\Sources\UniversalShader.cs" />
     <Compile Include="Shapes\Cone.cs" />
     <Compile Include="Shapes\CoordAxis.cs" />
     <Compile Include="Shapes\Cube.cs" />
