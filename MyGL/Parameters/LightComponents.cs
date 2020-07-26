@@ -31,7 +31,7 @@ namespace MyGL
         }
 
         /// <summary>
-        /// Specular компонент света
+        /// Specular компонент света.
         /// </summary>
         public Vector3 Specular 
         {
@@ -44,7 +44,7 @@ namespace MyGL
         /// </summary>
         /// <param name="ambient">Ambient компонент света.</param>
         /// <param name="diffuse">Diffuse компонент света.</param>
-        /// <param name="specular">Specular компонент света</param>
+        /// <param name="specular">Specular компонент света.</param>
         public LightComponents(Vector3 ambient, Vector3 diffuse, Vector3 specular)
         {
             Ambient = ambient;
