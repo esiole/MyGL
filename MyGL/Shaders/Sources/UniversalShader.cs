@@ -288,7 +288,7 @@ namespace MyGL
                 for(int i = 0; i < {countSpotLight}; i++)
                     result += CalcSpotLight(spotLights[i], norm, FragPos, viewDir);
                 
-                result *= Color;
+                //result *= Color;
                 gl_FragColor = vec4(result, 1.0f);
             }}
             ";

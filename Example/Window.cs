@@ -256,9 +256,9 @@ namespace Example
                     new Cone(new Vector3(0.0f, 0.0f, 0.0f), 0.1f, 0.3f, Material.YellowPlastic, conus),
                     new Cube(new Vector3(0.0f, 0.0f, 0.15f), 0.3f, new Vector3(1.0f, 0.0f, 1.0f), Material.Jade, cube),
                     new Cylinder(new Vector3(0.0f, 0.0f, 0.0f), 0.1f, 0.3f, Material.Bronze, cylinder),
-                    new Sheet(new Vector3(1.0f, -1.0f, 0.0f), new Vector3(1.0f, 1.0f, 0.0f), new Vector3(-1.0f, -1.0f, 0.0f), new Vector3(-1.0f, 1.0f, 0.0f), Material.Jade, Matrix4.Identity),
-                    new Sheet(new Vector3(1.0f, 1.0f, 0.0f), new Vector3(1.0f, -1.0f, 0.0f), new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, -1.0f, 1.0f), Material.Jade, Matrix4.Identity),
-                    new Sheet(new Vector3(-1.0f, 1.0f, 0.0f), new Vector3(1.0f, 1.0f, 0.0f), new Vector3(-1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f), Material.Jade, Matrix4.Identity),
+                    new Sheet(new Vector3(1.0f, -1.0f, 0.0f), new Vector3(1.0f, 1.0f, 0.0f), new Vector3(-1.0f, -1.0f, 0.0f), new Vector3(-1.0f, 1.0f, 0.0f), Material.Silver, Matrix4.Identity),
+                    new Sheet(new Vector3(1.0f, 1.0f, 0.0f), new Vector3(1.0f, -1.0f, 0.0f), new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, -1.0f, 1.0f), Material.Silver, Matrix4.Identity),
+                    new Sheet(new Vector3(-1.0f, 1.0f, 0.0f), new Vector3(1.0f, 1.0f, 0.0f), new Vector3(-1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f), Material.Silver, Matrix4.Identity),
                 },
                 //Lights = new List<LightSource>
                 //{
