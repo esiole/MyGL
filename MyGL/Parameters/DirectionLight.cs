@@ -10,7 +10,7 @@ using OpenTK.Input;
 
 namespace MyGL
 {
-    public class DirectionLight : Parameters
+    public class DirectionLight : LightComponents
     {
         public Vector3 Direction { get; set; }
 

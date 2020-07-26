@@ -10,7 +10,7 @@ using OpenTK.Input;
 
 namespace MyGL
 {
-    public sealed class LightingParameters
+    public sealed class Temp
     {
         public Vector3 Ambient { get; private set; }
         public Vector3 Diffuse { get; private set; }
@@ -25,7 +25,7 @@ namespace MyGL
         public float Linear { get; private set; }
         public float Quadratic { get; private set; }
 
-        public LightingParameters(Vector3 ambient, Vector3 diffuse, Vector3 specular, Vector3 position, Vector3 direction,
+        public Temp(Vector3 ambient, Vector3 diffuse, Vector3 specular, Vector3 position, Vector3 direction,
             Vector3 lightOffsetPos, float cutOff, float outerCutOff, float isSpotlight, float constant, float linear, float quadratic)
         {
             Ambient = ambient;

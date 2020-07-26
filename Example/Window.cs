@@ -25,7 +25,7 @@ namespace Example
         private float yAxisRotation = 0.0f;
         private float fov = 45.0f;                  // угол просмотра перспективной проекции
         private bool isOrto = false;                // выбранная проекция
-        private LightingParameters light;
+        private Temp light;
 
         private Vector3 LightPos;                   // позиция источника света
         private Vector3 LightDirection;             // направление прожектора
@@ -210,7 +210,7 @@ namespace Example
                 Quadratic = 0.44f,
 
                 //Source = new Cube(LightPos, 0.05f, new Vector3(1.0f, 1.0f, 1.0f), new Material(), Matrix4.CreateTranslation(LightPos)),
-                Source = new Cube(LightPos, 0.05f, new Vector3(1.0f, 1.0f, 1.0f), new Material(), Matrix4.Identity),
+                Source = new Cube(LightPos, 0.05f, new Vector3(1.0f, 1.0f, 1.0f), Material.LightSource, Matrix4.Identity),
             };
             
             var spotLight = new SpotLight

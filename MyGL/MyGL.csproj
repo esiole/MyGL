@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\MyGL.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -50,10 +51,10 @@
     <Compile Include="Drawing.cs" />
     <Compile Include="Parameters\LightSource.cs" />
     <Compile Include="Parameters\PointLight.cs" />
-    <Compile Include="Parameters\LightingParameters.cs" />
+    <Compile Include="Parameters\Temp.cs" />
     <Compile Include="Parameters\DirectionLight.cs" />
     <Compile Include="Parameters\Material.cs" />
-    <Compile Include="Parameters\Parameters.cs" />
+    <Compile Include="Parameters\LightComponents.cs" />
     <Compile Include="Parameters\SpotLight.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scene.cs" />
