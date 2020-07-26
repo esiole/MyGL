@@ -76,26 +76,6 @@ namespace MyGL
             GL.Uniform1(matrixHandle, vec);
         }
 
-        ~Shader()
-        {
-            Dispose(false);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool fromDisposeMethod)
-        {
-            if (!isDisposed)
-            {
-                GL.DeleteProgram(Handle);
-                isDisposed = true;
-            }
-        }
-
         // управление шейдером
         public void SetMaterial(Material material)
         {
@@ -164,12 +144,42 @@ namespace MyGL
             countSpotLight++;
         }
 
-        public void SetDirLight()
+        public void SetDirLight(DirectionLight light)
         {
-            SetUniform3("dirLight.ambient", new Vector3(-0.2f, -1.0f, -0.3f));
-            SetUniform3("dirLight.diffuse", new Vector3(0.05f, 0.05f, 0.05f));
-            SetUniform3("dirLight.specular", new Vector3(0.4f, 0.4f, 0.4f));
-            SetUniform3("dirLight.direction", new Vector3(0.5f, 0.5f, 0.5f));
+            SetUniform3("dirLight.ambient", light.Ambient);
+            SetUniform3("dirLight.diffuse", light.Diffuse);
+            SetUniform3("dirLight.specular", light.Specular);
+            SetUniform3("dirLight.direction", light.Direction);
+        }
+
+        public static IShaderSource Basic()
+        {
+            return new BasicShaderSource();
+        }
+
+        public static IShaderSource Phong(int countPointLight, int countSpotLight)
+        {
+            return new PhongShaderSource(countPointLight, countSpotLight);
+        }
+
+        ~Shader()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool fromDisposeMethod)
+        {
+            if (!isDisposed)
+            {
+                GL.DeleteProgram(Handle);
+                isDisposed = true;
+            }
         }
     }
 }

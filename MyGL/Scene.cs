@@ -15,12 +15,14 @@ namespace MyGL
         public Matrix4 Projection { get; set; }
         public Vector3 CameraPos { get; set; }
         public List<LightSource> Lights { get; private set; }
+        public DirectionLight DirectionLight { get; set; }
 
-        public Scene(Shader shader)
+        public Scene(IShaderSource shaderSource)
         {
             Shapes = new List<Shape>();
-            Shader = shader;
+            Shader = new Shader(shaderSource);
             Lights = new List<LightSource>();
+            DirectionLight = new DirectionLight();
         }
 
         public void Add(Shape shape)
@@ -43,7 +45,7 @@ namespace MyGL
             Shader.SetProjectionMatrix(Projection);
             Shader.SetCameraPos(CameraPos);
 
-            Shader.SetDirLight();
+            Shader.SetDirLight(DirectionLight);
 
             foreach (var e in Shapes.Where(e => !e.IsPointLight && !e.IsSpotLight))
             {

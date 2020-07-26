@@ -240,15 +240,13 @@ namespace Example
                 OuterCutOff = (float)Math.Cos(MathHelper.DegreesToRadians(29.5)),
             };
 
-
-            GraphicScene = new Scene(new Shader(new UniversalShader(1, 0)));
             Matrix4 model = Matrix4.Identity;
             Matrix4 cylinder = Matrix4.Mult(Matrix4.CreateTranslation(0.4f, 0.0f, 0.0f), model);
             cylinder = Matrix4.Mult(Matrix4.CreateTranslation(0.0f, 0.1f, 0.0f), cylinder);
             Matrix4 conus = Matrix4.Mult(Matrix4.CreateTranslation(-0.4f, 0.4f, 0.0f), model);
             Matrix4 cube = Matrix4.Mult(Matrix4.CreateTranslation(0.1f, 0.5f, 0.0f), model);
 
-            GraphicScene = new Scene(new Shader(new UniversalShader(1, 0)))
+            GraphicScene = new Scene(Shader.Phong(1, 0))
             {
                 Shapes = new List<Shape>
                 {
