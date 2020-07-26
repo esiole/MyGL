@@ -26,12 +26,6 @@ namespace Example
         private float fov = 45.0f;                  // угол просмотра перспективной проекции
         private bool isOrto = false;                // выбранная проекция
         private LightingParameters light;
-        private Cone Conus;
-        private Cube Cube;
-        private Cylinder Cylinder;
-        private Sheet BottomScene;
-        private Sheet Wall_1;
-        private Sheet Wall_2;
 
         private Vector3 LightPos;                   // позиция источника света
         private Vector3 LightDirection;             // направление прожектора
@@ -204,7 +198,7 @@ namespace Example
             isSpotlight = 1.0f;
             LightOffsetPos = new Vector3(0.0f, -0.5f, 0.5f);
 
-            var pointLight = new PointLight()
+            var pointLight = new PointLight
             {
                 Ambient = new Vector3(0.2f, 0.4f, 0.6f),
                 Diffuse = new Vector3(0.8f, 0.9f, 0.5f),
@@ -218,8 +212,8 @@ namespace Example
                 //Source = new Cube(LightPos, 0.05f, new Vector3(1.0f, 1.0f, 1.0f), new Material(), Matrix4.CreateTranslation(LightPos)),
                 Source = new Cube(LightPos, 0.05f, new Vector3(1.0f, 1.0f, 1.0f), new Material(), Matrix4.Identity),
             };
-
-            var spotLight = new SpotLight()
+            
+            var spotLight = new SpotLight
             {
                 Ambient = new Vector3(0.2f, 0.4f, 0.6f),
                 Diffuse = new Vector3(0.8f, 0.9f, 0.5f),
@@ -233,7 +227,7 @@ namespace Example
                 OuterCutOff = (float)Math.Cos(MathHelper.DegreesToRadians(29.5)),
             };
 
-            var spotLight1 = new SpotLight()
+            var spotLight1 = new SpotLight
             {
                 Ambient = new Vector3(0.2f, 0.4f, 0.6f),
                 Diffuse = new Vector3(0.8f, 0.9f, 0.5f),
@@ -250,25 +244,27 @@ namespace Example
 
             GraphicScene = new Scene(new Shader(new UniversalShader(1, 0)));
             Matrix4 model = Matrix4.Identity;
-
             Matrix4 cylinder = Matrix4.Mult(Matrix4.CreateTranslation(0.4f, 0.0f, 0.0f), model);
             cylinder = Matrix4.Mult(Matrix4.CreateTranslation(0.0f, 0.1f, 0.0f), cylinder);
             Matrix4 conus = Matrix4.Mult(Matrix4.CreateTranslation(-0.4f, 0.4f, 0.0f), model);
             Matrix4 cube = Matrix4.Mult(Matrix4.CreateTranslation(0.1f, 0.5f, 0.0f), model);
 
-            Conus = new Cone(new Vector3(0.0f, 0.0f, 0.0f), 0.1f, 0.3f, new YellowPlastic(), conus);
-            Cube = new Cube(new Vector3(0.0f, 0.0f, 0.15f), 0.3f, new Vector3(1.0f, 0.0f, 1.0f), new Jade(), cube);
-            Cylinder = new Cylinder(new Vector3(0.0f, 0.0f, 0.0f), 0.1f, 0.3f, new Bronze(), cylinder);
-            BottomScene = new Sheet(new Vector3(1.0f, -1.0f, 0.0f), new Vector3(1.0f, 1.0f, 0.0f), new Vector3(-1.0f, -1.0f, 0.0f), new Vector3(-1.0f, 1.0f, 0.0f), new Jade(), Matrix4.Identity);
-            Wall_1 = new Sheet(new Vector3(1.0f, 1.0f, 0.0f), new Vector3(1.0f, -1.0f, 0.0f), new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, -1.0f, 1.0f), new Jade(), Matrix4.Identity);
-            Wall_2 = new Sheet(new Vector3(-1.0f, 1.0f, 0.0f), new Vector3(1.0f, 1.0f, 0.0f), new Vector3(-1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f), new Jade(), Matrix4.Identity);
-            
-            GraphicScene.Add(Conus);
-            GraphicScene.Add(Cube);
-            GraphicScene.Add(Cylinder);
-            GraphicScene.Add(BottomScene);
-            GraphicScene.Add(Wall_1);
-            GraphicScene.Add(Wall_2);
+            GraphicScene = new Scene(new Shader(new UniversalShader(1, 0)))
+            {
+                Shapes = new List<Shape>
+                {
+                    new Cone(new Vector3(0.0f, 0.0f, 0.0f), 0.1f, 0.3f, new YellowPlastic(), conus),
+                    new Cube(new Vector3(0.0f, 0.0f, 0.15f), 0.3f, new Vector3(1.0f, 0.0f, 1.0f), new Jade(), cube),
+                    new Cylinder(new Vector3(0.0f, 0.0f, 0.0f), 0.1f, 0.3f, new Bronze(), cylinder),
+                    new Sheet(new Vector3(1.0f, -1.0f, 0.0f), new Vector3(1.0f, 1.0f, 0.0f), new Vector3(-1.0f, -1.0f, 0.0f), new Vector3(-1.0f, 1.0f, 0.0f), new Jade(), Matrix4.Identity),
+                    new Sheet(new Vector3(1.0f, 1.0f, 0.0f), new Vector3(1.0f, -1.0f, 0.0f), new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, -1.0f, 1.0f), new Jade(), Matrix4.Identity),
+                    new Sheet(new Vector3(-1.0f, 1.0f, 0.0f), new Vector3(1.0f, 1.0f, 0.0f), new Vector3(-1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f), new Jade(), Matrix4.Identity),
+                },
+                //Lights = new List<LightSource>
+                //{
+                //    pointLight,
+                //},
+            };
 
             GraphicScene.Add(pointLight);
             //GraphicScene.Add(spotLight);

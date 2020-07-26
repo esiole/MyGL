@@ -9,7 +9,7 @@ namespace MyGL
 {
     public class Scene
     {
-        public List<Shape> Shapes { get; private set; }
+        public List<Shape> Shapes { get; set; }
         public Shader Shader { get; private set; }
         public Matrix4 View { get; set; }
         public Matrix4 Projection { get; set; }
