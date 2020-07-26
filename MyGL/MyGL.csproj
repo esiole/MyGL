@@ -53,10 +53,6 @@
     <Compile Include="Parameters\LightingParameters.cs" />
     <Compile Include="Parameters\DirectionLight.cs" />
     <Compile Include="Parameters\Material.cs" />
-    <Compile Include="Parameters\Materials\Brass.cs" />
-    <Compile Include="Parameters\Materials\Bronze.cs" />
-    <Compile Include="Parameters\Materials\Jade.cs" />
-    <Compile Include="Parameters\Materials\YellowPlastic.cs" />
     <Compile Include="Parameters\Parameters.cs" />
     <Compile Include="Parameters\SpotLight.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
