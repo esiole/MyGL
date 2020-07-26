@@ -43,20 +43,20 @@ namespace MyGL
             GL.UseProgram(Handle);
         }
 
-        public int GetAttribLocation(string attribName)
-        {
-            return GL.GetAttribLocation(Handle, attribName);
-        }
+        //public int GetAttribLocation(string attribName)
+        //{
+        //    return GL.GetAttribLocation(Handle, attribName);
+        //}
 
-        public int GetUniformLocation(string name)
-        {
-            return GL.GetUniformLocation(Handle, name);
-        }
+        //public int GetUniformLocation(string name)
+        //{
+        //    return GL.GetUniformLocation(Handle, name);
+        //}
 
-        public void UniformMatrix4(int unifMatrix, bool transpose, Matrix4 matrix)
-        {
-            GL.UniformMatrix4(unifMatrix, transpose, ref matrix);
-        }
+        //public void UniformMatrix4(int unifMatrix, bool transpose, Matrix4 matrix)
+        //{
+        //    GL.UniformMatrix4(unifMatrix, transpose, ref matrix);
+        //}
 
         public void SetUniformMatrix4(string name, bool transpose, Matrix4 matrix)
         {
@@ -150,16 +150,6 @@ namespace MyGL
             SetUniform3("dirLight.diffuse", light.Diffuse);
             SetUniform3("dirLight.specular", light.Specular);
             SetUniform3("dirLight.direction", light.Direction);
-        }
-
-        public static IShaderSource Basic()
-        {
-            return new BasicShaderSource();
-        }
-
-        public static IShaderSource Phong(int countPointLight, int countSpotLight)
-        {
-            return new PhongShaderSource(countPointLight, countSpotLight);
         }
 
         ~Shader()

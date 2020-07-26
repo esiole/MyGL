@@ -58,6 +58,7 @@
     <Compile Include="Parameters\SpotLight.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scene.cs" />
+    <Compile Include="Shaders\ShaderSource.cs" />
     <Compile Include="Shaders\Sources\BasicShaderSource.cs" />
     <Compile Include="Shaders\IShaderSource.cs" />
     <Compile Include="Shaders\Shader.cs" />

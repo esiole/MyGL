@@ -246,7 +246,7 @@ namespace Example
             Matrix4 conus = Matrix4.Mult(Matrix4.CreateTranslation(-0.4f, 0.4f, 0.0f), model);
             Matrix4 cube = Matrix4.Mult(Matrix4.CreateTranslation(0.1f, 0.5f, 0.0f), model);
 
-            GraphicScene = new Scene(Shader.Phong(1, 0))
+            GraphicScene = new Scene(ShaderSource.Phong(1, 0))
             {
                 Shapes = new List<Shape>
                 {
