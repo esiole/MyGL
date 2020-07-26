@@ -141,7 +141,6 @@ namespace MyGL
             SetUniform3($"pointLights[{countPointLight}].ambient", light.Ambient);
             SetUniform3($"pointLights[{countPointLight}].diffuse", light.Diffuse);
             SetUniform3($"pointLights[{countPointLight}].specular", light.Specular);
-            SetUniform3($"pointLights[{countPointLight}].direction", light.Direction);
             SetUniform3($"pointLights[{countPointLight}].position", light.Position);
             SetUniform1($"pointLights[{countPointLight}].constant", light.Constant);
             SetUniform1($"pointLights[{countPointLight}].linear", light.Linear);
