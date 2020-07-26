@@ -25,7 +25,6 @@ namespace Example
         private float yAxisRotation = 0.0f;
         private float fov = 45.0f;                  // угол просмотра перспективной проекции
         private bool isOrto = false;                // выбранная проекция
-        private Shader shader;                      // шейдерная программа
         private LightingParameters light;
         private Cone Conus;
         private Cube Cube;
@@ -35,7 +34,6 @@ namespace Example
         private Sheet Wall_2;
 
         private Vector3 LightPos;                   // позиция источника света
-        private Cube Light;                         // источник света
         private Vector3 LightDirection;             // направление прожектора
         private float isSpotlight;                  // прожектор (> 0) или точечный источник (< 0)
         private Vector3 LightOffsetPos;             // смещение положения источника света
@@ -202,37 +200,9 @@ namespace Example
             GL.ClearColor(0.59f, 0.59f, 0.59f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
 
-
-            //shader = new Shader(new PhongShaderSource());
-            shader = new Shader(new UniversalShader(1, 1));
-            //CameraPos = new Vector3(-1.0f, -1.0f, 1.0f);  // позиция камеры
-            Light = new Cube(LightPos, 0.05f, new Vector3(1.0f, 1.0f, 1.0f), new Material(), Matrix4.Identity)
-            {
-                //IsSpotLight = true,
-                IsPointLight = true,
-            };
-            //var Light1 = new Cube(LightPos, 0.05f, new Vector3(1.0f, 1.0f, 1.0f), new Material(), Matrix4.Identity)
-            //{
-            //    //IsSpotLight = true,
-            //    IsPointLight = true,
-            //};
             LightDirection = new Vector3(-0.2f, 0.45f, 0.0f) - LightPos;
             isSpotlight = 1.0f;
             LightOffsetPos = new Vector3(0.0f, -0.5f, 0.5f);
-
-
-            var ambient = new Vector3(0.2f, 0.4f, 0.6f);
-            var diffuse = new Vector3(0.8f, 0.9f, 0.5f);
-            var specular = new Vector3(1.0f, 0.8f, 1.0f);
-            var cutOff = (float)Math.Cos(MathHelper.DegreesToRadians(18.5));  // угол прожектора
-            var outerCutOff = (float)Math.Cos(MathHelper.DegreesToRadians(29.5));
-            var constant = 1.0f;
-            var linear = 0.35f;
-            var quadratic = 0.44f;
-
-            light = new LightingParameters(ambient, diffuse, specular, LightPos, LightDirection, LightOffsetPos, cutOff, outerCutOff, 
-                isSpotlight, constant, linear, quadratic);
-
 
             var pointLight = new PointLight()
             {
@@ -244,6 +214,9 @@ namespace Example
                 Constant = 1.0f,
                 Linear = 0.35f,
                 Quadratic = 0.44f,
+
+                //Source = new Cube(LightPos, 0.05f, new Vector3(1.0f, 1.0f, 1.0f), new Material(), Matrix4.CreateTranslation(LightPos)),
+                Source = new Cube(LightPos, 0.05f, new Vector3(1.0f, 1.0f, 1.0f), new Material(), Matrix4.Identity),
             };
 
             var spotLight = new SpotLight()
@@ -251,7 +224,7 @@ namespace Example
                 Ambient = new Vector3(0.2f, 0.4f, 0.6f),
                 Diffuse = new Vector3(0.8f, 0.9f, 0.5f),
                 Specular = new Vector3(1.0f, 0.8f, 1.0f),
-                Position = LightPos,
+                Position = LightPos ,
                 Direction = new Vector3(-0.2f, 0.45f, 0.0f) - LightPos,
                 Constant = 1.0f,
                 Linear = 0.35f,
@@ -260,7 +233,22 @@ namespace Example
                 OuterCutOff = (float)Math.Cos(MathHelper.DegreesToRadians(29.5)),
             };
 
-            GraphicScene = new Scene(shader);
+            var spotLight1 = new SpotLight()
+            {
+                Ambient = new Vector3(0.2f, 0.4f, 0.6f),
+                Diffuse = new Vector3(0.8f, 0.9f, 0.5f),
+                Specular = new Vector3(1.0f, 0.8f, 1.0f),
+                Position = LightPos,
+                Direction = new Vector3(0.2f, -0.9f, 0.0f) - LightPos,
+                Constant = 1.0f,
+                Linear = 0.35f,
+                Quadratic = 0.44f,
+                CutOff = (float)Math.Cos(MathHelper.DegreesToRadians(18.5)),
+                OuterCutOff = (float)Math.Cos(MathHelper.DegreesToRadians(29.5)),
+            };
+
+
+            GraphicScene = new Scene(new Shader(new UniversalShader(1, 0)));
             Matrix4 model = Matrix4.Identity;
 
             Matrix4 cylinder = Matrix4.Mult(Matrix4.CreateTranslation(0.4f, 0.0f, 0.0f), model);
@@ -281,12 +269,12 @@ namespace Example
             GraphicScene.Add(BottomScene);
             GraphicScene.Add(Wall_1);
             GraphicScene.Add(Wall_2);
-            //GraphicScene.Add(Light);
-            //GraphicScene.Add(Light1);
-            GraphicScene.Add(pointLight);
-            GraphicScene.Add(spotLight);
 
-            light.ParametersChange += () => Canvas.Invalidate();
+            GraphicScene.Add(pointLight);
+            //GraphicScene.Add(spotLight);
+            //GraphicScene.Add(spotLight1);
+
+            //light.ParametersChange += () => Canvas.Invalidate();
             isLoad = true;
             status.Text = "Готово";
         }
@@ -301,7 +289,7 @@ namespace Example
         {
             if (!isLoad) return;
             Matrix4 model = Matrix4.Identity;
-            Matrix4 light = Matrix4.Mult(Matrix4.CreateTranslation(this.light.LightOffsetPos - this.light.Position), model);
+            //Matrix4 light = Matrix4.Mult(Matrix4.CreateTranslation(this.light.LightOffsetPos - this.light.Position), model);
 
             Matrix4 left = Matrix4.CreateRotationX(xAxisRotation);
             Matrix4 right = Matrix4.CreateRotationY(yAxisRotation);
@@ -315,11 +303,9 @@ namespace Example
             GL.Enable(EnableCap.PointSmooth);
             GL.Enable(EnableCap.LineSmooth);
 
-            //shader.SetLightingParameters(this.light, this.light.LightOffsetPos);
             GraphicScene.View = view;
             GraphicScene.Projection = projection;
             GraphicScene.CameraPos = new Vector3(-1.0f, -1.0f, 1.0f);
-            Light.Model = light;
             GraphicScene.Draw();
 
             GL.Disable(EnableCap.PointSmooth);
@@ -330,7 +316,7 @@ namespace Example
         private void MainWindow_FormClosed(object sender, FormClosedEventArgs e)
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            shader.Dispose();
+            //shader.Dispose();
         }
 
         private void Canvas_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)

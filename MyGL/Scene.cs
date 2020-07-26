@@ -14,33 +14,18 @@ namespace MyGL
         public Matrix4 View { get; set; }
         public Matrix4 Projection { get; set; }
         public Vector3 CameraPos { get; set; }
-
         public List<LightSource> Lights { get; private set; }
 
-        //public Vector3 Test = new Vector3();
-        //public event Action<float> XChange;
-        //public void Event(float a)
-        //{
-        //    Test.X = a;
-        //    if (XChange != null) XChange(a);
-        //}
-
-        public Scene(Shader shader/*, Matrix4 view, Matrix4 projection*/)
+        public Scene(Shader shader)
         {
             Shapes = new List<Shape>();
             Shader = shader;
-
             Lights = new List<LightSource>();
-            //View = view;
-            //Projection = projection;
         }
 
         public void Add(Shape shape)
         {
-            //Shader.Use();
             Shapes.Add(shape);
-            //if (shape.IsPointLight) Shader.SetPointLight(shape);
-            //if (shape.IsSpotLight) Shader.SetSpotLight(shape);
         }
 
         public void Add(LightSource light)
@@ -58,19 +43,7 @@ namespace MyGL
             Shader.SetProjectionMatrix(Projection);
             Shader.SetCameraPos(CameraPos);
 
-
-            //foreach (var e in Shapes.Where(e => e.IsPointLight))
-            //{
-            //    Shader.SetPointLight(e);
-            //}
-            //foreach (var e in Shapes.Where(e => e.IsSpotLight))
-            //{
-            //    Shader.SetSpotLight(e);
-            //}
             Shader.SetDirLight();
-
-
-
 
             foreach (var e in Shapes.Where(e => !e.IsPointLight && !e.IsSpotLight))
             {
@@ -78,16 +51,14 @@ namespace MyGL
                 Shader.SetMaterial(e.Material);
                 e.Draw();
             }
-            foreach (var e in Shapes.Where(e => e.IsPointLight || e.IsSpotLight))
+            Shader.SetUniform3("dirLight.ambient", new Vector3(1.0f, 1.0f, 1.0f));
+            Shader.SetUniform3("dirLight.diffuse", new Vector3(1.0f, 1.0f, 1.0f));
+            Shader.SetUniform3("dirLight.specular", new Vector3(1.0f, 1.0f, 1.0f));
+            foreach (var e in Lights)
             {
-                Shader.SetModelMatrix(e.Model);
-                Shader.SetMaterial(e.Material);
-
-                Shader.SetUniform3("light.ambient", new Vector3(1.0f, 1.0f, 1.0f));
-                Shader.SetUniform3("light.diffuse", new Vector3(1.0f, 1.0f, 1.0f));
-                Shader.SetUniform3("light.specular", new Vector3(1.0f, 1.0f, 1.0f));
-
-                e.Draw();
+                Shader.SetModelMatrix(e.Source.Model);
+                Shader.SetMaterial(e.Source.Material);
+                e.Source.Draw();
             }
         }
     }

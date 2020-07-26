@@ -105,21 +105,6 @@ namespace MyGL
             SetUniform1("material.shininess", material.Shininess);
         }
 
-        //public void SetLightingParameters(LightingParameters parameters, Vector3 position)
-        //{
-        //    SetUniform3("light.ambient", parameters.Ambient);
-        //    SetUniform3("light.diffuse", parameters.Diffuse);
-        //    SetUniform3("light.specular", parameters.Specular);
-        //    SetUniform3("light.position", position);
-        //    SetUniform3("light.direction", parameters.Direction);
-        //    SetUniform1("light.cutOff", parameters.CutOff);
-        //    SetUniform1("light.outerCutOff", parameters.OuterCutOff);
-        //    SetUniform1("light.isSpotlight", parameters.IsSpotlight);
-        //    SetUniform1("light.constant", parameters.Constant);
-        //    SetUniform1("light.linear", parameters.Linear);
-        //    SetUniform1("light.quadratic", parameters.Quadratic);
-        //}
-
         public void SetViewMatrix(Matrix4 view)
         {
             SetUniformMatrix4("view", false, view);
@@ -153,15 +138,6 @@ namespace MyGL
         private int countPointLight = 0;
         public void SetPointLight(PointLight light)
         {
-            //SetUniform3($"pointLights[{countPointLight}].ambient", new Vector3(1.0f, 1.0f, 1.0f));
-            //SetUniform3($"pointLights[{countPointLight}].diffuse", new Vector3(1.0f, 1.0f, 1.0f));
-            //SetUniform3($"pointLights[{countPointLight}].specular", new Vector3(1.0f, 1.0f, 1.0f));
-            //SetUniform3($"pointLights[{countPointLight}].direction", new Vector3(1.0f, 1.0f, 1.0f));
-            //SetUniform3($"pointLights[{countPointLight}].position", new Vector3(1.0f, 1.0f, 1.0f));
-            //SetUniform1($"pointLights[{countPointLight}].constant", 1.0f);
-            //SetUniform1($"pointLights[{countPointLight}].linear", 1.0f);
-            //SetUniform1($"pointLights[{countPointLight}].quadratic", 1.0f);
-
             SetUniform3($"pointLights[{countPointLight}].ambient", light.Ambient);
             SetUniform3($"pointLights[{countPointLight}].diffuse", light.Diffuse);
             SetUniform3($"pointLights[{countPointLight}].specular", light.Specular);
@@ -176,16 +152,6 @@ namespace MyGL
         private int countSpotLight = 0;
         public void SetSpotLight(SpotLight light)
         {
-            //SetUniform3($"spotLights[{countSpotLight}].ambient", new Vector3(1.0f, 1.0f, 1.0f));
-            //SetUniform3($"spotLights[{countSpotLight}].diffuse", new Vector3(1.0f, 1.0f, 1.0f));
-            //SetUniform3($"spotLights[{countSpotLight}].specular", new Vector3(1.0f, 1.0f, 1.0f));
-            //SetUniform3($"spotLights[{countSpotLight}].direction", new Vector3(1.0f, 1.0f, 1.0f));
-            //SetUniform3($"spotLights[{countSpotLight}].position", new Vector3(1.0f, 1.0f, 1.0f));
-            //SetUniform1($"spotLights[{countSpotLight}].constant", 1.0f);
-            //SetUniform1($"spotLights[{countSpotLight}].linear", 1.0f);
-            //SetUniform1($"spotLights[{countSpotLight}].quadratic", 1.0f);
-            //SetUniform1($"spotLights[{countSpotLight}].cutOff", 1.0f);
-            //SetUniform1($"spotLights[{countSpotLight}].outerCutOff", 1.0f);
             SetUniform3($"spotLights[{countSpotLight}].ambient", light.Ambient);
             SetUniform3($"spotLights[{countSpotLight}].diffuse", light.Diffuse);
             SetUniform3($"spotLights[{countSpotLight}].specular", light.Specular);
@@ -196,7 +162,6 @@ namespace MyGL
             SetUniform1($"spotLights[{countSpotLight}].quadratic", light.Quadratic);
             SetUniform1($"spotLights[{countSpotLight}].cutOff", light.CutOff);
             SetUniform1($"spotLights[{countSpotLight}].outerCutOff", light.OuterCutOff);
-
             countSpotLight++;
         }
 
