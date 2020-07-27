@@ -43,18 +43,18 @@ namespace MyGL
         {
             Controller.PrepareDraw(View, Projection, CameraPos);
             Controller.EnableDirLight(DirectionLight);
-            foreach (var e in Shapes)
+            DrawElements(Shapes);
+            Controller.DisableDirLight();
+            DrawElements(Lights.Select(light => light.Source));
+        }
+
+        private void DrawElements(IEnumerable<Shape> elements)
+        {
+            foreach (var e in elements)
             {
                 Controller.SetModelMatrix(e.Model);
                 Controller.SetMaterial(e.Material);
                 e.Draw();
-            }
-            Controller.DisableDirLight();
-            foreach (var e in Lights)
-            {
-                Controller.SetModelMatrix(e.Source.Model);
-                Controller.SetMaterial(e.Source.Material);
-                e.Source.Draw();
             }
         }
 
