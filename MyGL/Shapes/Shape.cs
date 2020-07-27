@@ -19,9 +19,6 @@ namespace MyGL
         protected VertexArrayObject[] VAO { get; set; }
         public Material Material { get; private set; }
         public Matrix4 Model { get; set; }
-        
-        public bool IsPointLight { get; set; }
-        public bool IsSpotLight { get; set; }
 
         public Shape(int CountVBO, int CountVAO, Material material, Matrix4 model)
         {
@@ -29,9 +26,6 @@ namespace MyGL
             VAO = new VertexArrayObject[CountVAO];
             Material = material;
             Model = model;
-
-            IsPointLight = false;
-            IsSpotLight = false;
         }
 
         public abstract void Draw();

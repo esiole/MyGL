@@ -49,7 +49,7 @@ namespace MyGL
 
             Shader.SetDirLight(DirectionLight);
 
-            foreach (var e in Shapes.Where(e => !e.IsPointLight && !e.IsSpotLight))
+            foreach (var e in Shapes)
             {
                 Shader.SetModelMatrix(e.Model);
                 Shader.SetMaterial(e.Material);
