@@ -12,19 +12,19 @@ namespace MyGL
         private bool disposedValue;
 
         public List<Shape> Shapes { get; set; }
-        public Shader Shader { get; private set; }
         public Matrix4 View { get; set; }
         public Matrix4 Projection { get; set; }
         public Vector3 CameraPos { get; set; }
         public List<LightSource> Lights { get; private set; }
         public DirectionLight DirectionLight { get; set; }
+        public ShaderController Controller { get; private set; }
 
         public Scene(IShaderSource shaderSource)
         {
             Shapes = new List<Shape>();
-            Shader = new Shader(shaderSource);
             Lights = new List<LightSource>();
             DirectionLight = new DirectionLight();
+            Controller = new ShaderController(shaderSource);
         }
 
         public void Add(Shape shape)
@@ -34,34 +34,26 @@ namespace MyGL
 
         public void Add(LightSource light)
         {
-            Shader.Use();
             Lights.Add(light);
-            if (light is PointLight) Shader.SetPointLight(light as PointLight);
-            if (light is SpotLight) Shader.SetSpotLight(light as SpotLight);
+            if (light is PointLight) Controller.AddPointLight(light as PointLight);
+            if (light is SpotLight) Controller.AddSpotLight(light as SpotLight);
         }
 
         public void Draw()
         {
-            Shader.Use();
-            Shader.SetViewMatrix(View);
-            Shader.SetProjectionMatrix(Projection);
-            Shader.SetCameraPos(CameraPos);
-
-            Shader.SetDirLight(DirectionLight);
-
+            Controller.PrepareDraw(View, Projection, CameraPos);
+            Controller.EnableDirLight(DirectionLight);
             foreach (var e in Shapes)
             {
-                Shader.SetModelMatrix(e.Model);
-                Shader.SetMaterial(e.Material);
+                Controller.SetModelMatrix(e.Model);
+                Controller.SetMaterial(e.Material);
                 e.Draw();
             }
-            Shader.SetUniform3("dirLight.ambient", new Vector3(1.0f, 1.0f, 1.0f));
-            Shader.SetUniform3("dirLight.diffuse", new Vector3(1.0f, 1.0f, 1.0f));
-            Shader.SetUniform3("dirLight.specular", new Vector3(1.0f, 1.0f, 1.0f));
+            Controller.DisableDirLight();
             foreach (var e in Lights)
             {
-                Shader.SetModelMatrix(e.Source.Model);
-                Shader.SetMaterial(e.Source.Material);
+                Controller.SetModelMatrix(e.Source.Model);
+                Controller.SetMaterial(e.Source.Material);
                 e.Source.Draw();
             }
         }
@@ -72,7 +64,7 @@ namespace MyGL
             {
                 if (disposing)
                 {
-                    Shader.Dispose();
+                    Controller.Dispose();
                     foreach (var e in Shapes)
                     {
                         e.Dispose();

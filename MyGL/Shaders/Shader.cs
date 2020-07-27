@@ -77,81 +77,81 @@ namespace MyGL
         }
 
         // управление шейдером
-        public void SetMaterial(Material material)
-        {
-            SetUniform3("material.ambient", material.Ambient);
-            SetUniform3("material.diffuse", material.Diffuse);
-            SetUniform3("material.specular", material.Specular);
-            SetUniform1("material.shininess", material.Shininess);
-        }
+        //public void SetMaterial(Material material)
+        //{
+        //    SetUniform3("material.ambient", material.Ambient);
+        //    SetUniform3("material.diffuse", material.Diffuse);
+        //    SetUniform3("material.specular", material.Specular);
+        //    SetUniform1("material.shininess", material.Shininess);
+        //}
 
-        public void SetViewMatrix(Matrix4 view)
-        {
-            SetUniformMatrix4("view", false, view);
-        }
+        //public void SetViewMatrix(Matrix4 view)
+        //{
+        //    SetUniformMatrix4("view", false, view);
+        //}
 
-        public void SetProjectionMatrix(Matrix4 projection)
-        {
-            SetUniformMatrix4("projection", false, projection);
-        }
+        //public void SetProjectionMatrix(Matrix4 projection)
+        //{
+        //    SetUniformMatrix4("projection", false, projection);
+        //}
 
-        public void SetModelMatrix(Matrix4 model)
-        {
-            SetUniformMatrix4("model", false, model);
-        }
+        //public void SetModelMatrix(Matrix4 model)
+        //{
+        //    SetUniformMatrix4("model", false, model);
+        //}
 
-        public void SetCameraPos(Vector3 cameraPos)
-        {
-            SetUniform3("viewPos", cameraPos);
-        }
+        //public void SetCameraPos(Vector3 cameraPos)
+        //{
+        //    SetUniform3("viewPos", cameraPos);
+        //}
 
-        public void SetNullDirLight()
-        {
+        //public void SetNullDirLight()
+        //{
 
-        }
+        //}
 
-        public void SetNullPointLight()
-        {
+        //public void SetNullPointLight()
+        //{
 
-        }
+        //}
 
-        private int countPointLight = 0;
-        public void SetPointLight(PointLight light)
-        {
-            SetUniform3($"pointLights[{countPointLight}].ambient", light.Ambient);
-            SetUniform3($"pointLights[{countPointLight}].diffuse", light.Diffuse);
-            SetUniform3($"pointLights[{countPointLight}].specular", light.Specular);
-            SetUniform3($"pointLights[{countPointLight}].position", light.Position);
-            SetUniform1($"pointLights[{countPointLight}].constant", light.Constant);
-            SetUniform1($"pointLights[{countPointLight}].linear", light.Linear);
-            SetUniform1($"pointLights[{countPointLight}].quadratic", light.Quadratic);
-            countPointLight++;
-        }
+        //private int countPointLight = 0;
+        //public void SetPointLight(PointLight light)
+        //{
+        //    SetUniform3($"pointLights[{countPointLight}].ambient", light.Ambient);
+        //    SetUniform3($"pointLights[{countPointLight}].diffuse", light.Diffuse);
+        //    SetUniform3($"pointLights[{countPointLight}].specular", light.Specular);
+        //    SetUniform3($"pointLights[{countPointLight}].position", light.Position);
+        //    SetUniform1($"pointLights[{countPointLight}].constant", light.Constant);
+        //    SetUniform1($"pointLights[{countPointLight}].linear", light.Linear);
+        //    SetUniform1($"pointLights[{countPointLight}].quadratic", light.Quadratic);
+        //    countPointLight++;
+        //}
 
-        private int countSpotLight = 0;
+        //private int countSpotLight = 0;
 
-        public void SetSpotLight(SpotLight light)
-        {
-            SetUniform3($"spotLights[{countSpotLight}].ambient", light.Ambient);
-            SetUniform3($"spotLights[{countSpotLight}].diffuse", light.Diffuse);
-            SetUniform3($"spotLights[{countSpotLight}].specular", light.Specular);
-            SetUniform3($"spotLights[{countSpotLight}].direction", light.Direction);
-            SetUniform3($"spotLights[{countSpotLight}].position", light.Position);
-            SetUniform1($"spotLights[{countSpotLight}].constant", light.Constant);
-            SetUniform1($"spotLights[{countSpotLight}].linear", light.Linear);
-            SetUniform1($"spotLights[{countSpotLight}].quadratic", light.Quadratic);
-            SetUniform1($"spotLights[{countSpotLight}].cutOff", light.CutOff);
-            SetUniform1($"spotLights[{countSpotLight}].outerCutOff", light.OuterCutOff);
-            countSpotLight++;
-        }
+        //public void SetSpotLight(SpotLight light)
+        //{
+        //    SetUniform3($"spotLights[{countSpotLight}].ambient", light.Ambient);
+        //    SetUniform3($"spotLights[{countSpotLight}].diffuse", light.Diffuse);
+        //    SetUniform3($"spotLights[{countSpotLight}].specular", light.Specular);
+        //    SetUniform3($"spotLights[{countSpotLight}].direction", light.Direction);
+        //    SetUniform3($"spotLights[{countSpotLight}].position", light.Position);
+        //    SetUniform1($"spotLights[{countSpotLight}].constant", light.Constant);
+        //    SetUniform1($"spotLights[{countSpotLight}].linear", light.Linear);
+        //    SetUniform1($"spotLights[{countSpotLight}].quadratic", light.Quadratic);
+        //    SetUniform1($"spotLights[{countSpotLight}].cutOff", light.CutOff);
+        //    SetUniform1($"spotLights[{countSpotLight}].outerCutOff", light.OuterCutOff);
+        //    countSpotLight++;
+        //}
 
-        public void SetDirLight(DirectionLight light)
-        {
-            SetUniform3("dirLight.ambient", light.Ambient);
-            SetUniform3("dirLight.diffuse", light.Diffuse);
-            SetUniform3("dirLight.specular", light.Specular);
-            SetUniform3("dirLight.direction", light.Direction);
-        }
+        //public void SetDirLight(DirectionLight light)
+        //{
+        //    SetUniform3("dirLight.ambient", light.Ambient);
+        //    SetUniform3("dirLight.diffuse", light.Diffuse);
+        //    SetUniform3("dirLight.specular", light.Specular);
+        //    SetUniform3("dirLight.direction", light.Direction);
+        //}
 
         protected virtual void Dispose(bool disposing)
         {
