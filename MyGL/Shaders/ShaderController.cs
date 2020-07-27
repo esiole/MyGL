@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OpenTK;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
-using OpenTK.Input;
 
 namespace MyGL
 {
@@ -37,13 +30,19 @@ namespace MyGL
                 new Vector3(1.0f, 1.0f, 1.0f), new Vector3(0.5f, 0.5f, 0.5f)));
         }
 
-        public void AddPointLight(PointLight light)
+        public void AddLight(LightSource light)
+        {
+            if (light is PointLight) AddPointLight(light as PointLight);
+            if (light is SpotLight) AddSpotLight(light as SpotLight);
+        }
+
+        private void AddPointLight(PointLight light)
         {
             AddLightSource(light, "pointLights", countPointLight);
             countPointLight++;
         }
 
-        public void AddSpotLight(SpotLight light)
+        private void AddSpotLight(SpotLight light)
         {
             AddLightSource(light, "spotLights", countSpotLight);
             shader.SetUniform3($"spotLights[{countSpotLight}].direction", light.Direction);

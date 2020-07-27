@@ -35,8 +35,7 @@ namespace MyGL
         public void Add(LightSource light)
         {
             Lights.Add(light);
-            if (light is PointLight) Controller.AddPointLight(light as PointLight);
-            if (light is SpotLight) Controller.AddSpotLight(light as SpotLight);
+            Controller.AddLight(light);
         }
 
         public void Draw()
