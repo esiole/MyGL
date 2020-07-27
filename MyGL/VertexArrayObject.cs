@@ -13,7 +13,8 @@ namespace MyGL
 {
     public class VertexArrayObject : IDisposable
     {
-        private bool disposedValue = false;
+        private bool disposedValue;
+
         public int Handle { get; private set; }
         public int VertexCount { get; private set; }
 
@@ -43,7 +44,7 @@ namespace MyGL
             GL.DrawArrays(type, 0, VertexCount);
         }
 
-        private void ReleaseHandle()
+        protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
@@ -52,18 +53,18 @@ namespace MyGL
             }
         }
 
-        public void Dispose()
-        {
-            ReleaseHandle();
-            GC.SuppressFinalize(this);
-        }
-
         ~VertexArrayObject()
         {
-            if (GraphicsContext.CurrentContext != null && !GraphicsContext.CurrentContext.IsDisposed)
-            {
-                ReleaseHandle();
-            }
+            //if (GraphicsContext.CurrentContext != null && !GraphicsContext.CurrentContext.IsDisposed)
+            //{
+                Dispose(false);
+            //}
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

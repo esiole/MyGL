@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace MyGL
 {
-    public class Scene
+    public class Scene : IDisposable
     {
+        private bool disposedValue;
+
         public List<Shape> Shapes { get; set; }
         public Shader Shader { get; private set; }
         public Matrix4 View { get; set; }
@@ -62,6 +64,32 @@ namespace MyGL
                 Shader.SetMaterial(e.Source.Material);
                 e.Source.Draw();
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    Shader.Dispose();
+                    foreach (var e in Shapes)
+                    {
+                        e.Dispose();
+                    }
+                    foreach (var e in Lights)
+                    {
+                        e.Dispose();
+                    }    
+                }
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

@@ -18,6 +18,7 @@ namespace Example
 {
     public class Window : Form
     {
+        private bool isDisposed = false;
         private bool isLoad = false;                // загружен ли холст
         private Point mouse;                        // координаты мышки
         private bool isMove = false;                // начато ли вращение
@@ -107,7 +108,6 @@ namespace Example
             WindowState = FormWindowState.Maximized;
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Example";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainWindow_FormClosed);
 
             comboBox1.Items.AddRange(new string[] { "Перспективная", "Ортогональная" });
             comboBox1.SelectedIndex = 0;
@@ -306,12 +306,6 @@ namespace Example
             Canvas.SwapBuffers();
         }
 
-        private void MainWindow_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            //shader.Dispose();
-        }
-
         private void Canvas_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             mouse = e.Location;
@@ -373,6 +367,21 @@ namespace Example
                 isSpotlight = -1.0f;
             }
             Canvas.Invalidate();
+        }
+
+        protected override void Dispose(bool fromDisposeMethod)
+        {
+            if (!isDisposed)
+            {
+                if (fromDisposeMethod)
+                {
+                    GraphicScene.Dispose();
+                }
+                // тут удаление неуправляемых ресурсов
+                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+                isDisposed = true;
+                base.Dispose(fromDisposeMethod);
+            }
         }
     }
 }

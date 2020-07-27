@@ -13,7 +13,8 @@ namespace MyGL
 {
     public class VertexBufferObject : IDisposable
     {
-        private bool disposedValue = false;
+        private bool disposedValue;
+
         public int Handle { get; private set; }
         public BufferTarget Type { get; private set; }
 
@@ -38,7 +39,7 @@ namespace MyGL
             GL.BindBuffer(Type, Handle);
         }
 
-        private void ReleaseHandle()
+        protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
@@ -47,18 +48,18 @@ namespace MyGL
             }
         }
 
-        public void Dispose()
-        {
-            ReleaseHandle();
-            GC.SuppressFinalize(this);
-        }
-
         ~VertexBufferObject()
         {
-            if (GraphicsContext.CurrentContext != null && !GraphicsContext.CurrentContext.IsDisposed)
-            {
-                ReleaseHandle();
-            }
+            //if (GraphicsContext.CurrentContext != null && !GraphicsContext.CurrentContext.IsDisposed)
+            //{
+                Dispose(false);
+            //}
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

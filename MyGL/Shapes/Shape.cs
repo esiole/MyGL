@@ -11,8 +11,10 @@ using OpenTK.Input;
 
 namespace MyGL
 {
-    public abstract class Shape
+    public abstract class Shape : IDisposable
     {
+        private bool disposedValue;
+
         protected VertexBufferObject[] VBO { get; set; }
         protected VertexArrayObject[] VAO { get; set; }
         public Material Material { get; private set; }
@@ -50,16 +52,29 @@ namespace MyGL
 
         }
 
-        protected void Dispose()
+        protected virtual void Dispose(bool disposing)
         {
-            foreach (VertexArrayObject element in VAO)
+            if (!disposedValue)
             {
-                element.Dispose();
+                if (disposing)
+                {
+                    foreach (var e in VAO)
+                    {
+                        e.Dispose();
+                    }
+                    foreach (var e in VBO)
+                    {
+                        e.Dispose();
+                    }
+                }
+                disposedValue = true;
             }
-            foreach (VertexBufferObject element in VBO)
-            {
-                element.Dispose();
-            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

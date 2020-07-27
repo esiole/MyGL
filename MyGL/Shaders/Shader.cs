@@ -6,7 +6,7 @@ namespace MyGL
 {
     public class Shader : IDisposable
     {
-        private bool isDisposed = false;
+        private bool disposedValue;
         private int Handle { get; set; }
 
         public Shader(IShaderSource source) : this(source.VertexShaderSource, source.FragmentShaderSource) { }
@@ -129,6 +129,7 @@ namespace MyGL
         }
 
         private int countSpotLight = 0;
+
         public void SetSpotLight(SpotLight light)
         {
             SetUniform3($"spotLights[{countSpotLight}].ambient", light.Ambient);
@@ -152,6 +153,15 @@ namespace MyGL
             SetUniform3("dirLight.direction", light.Direction);
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                GL.DeleteProgram(Handle);
+                disposedValue = true;
+            }
+        }
+
         ~Shader()
         {
             Dispose(false);
@@ -161,15 +171,6 @@ namespace MyGL
         {
             Dispose(true);
             GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool fromDisposeMethod)
-        {
-            if (!isDisposed)
-            {
-                GL.DeleteProgram(Handle);
-                isDisposed = true;
-            }
         }
     }
 }

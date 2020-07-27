@@ -1,12 +1,15 @@
 ﻿using OpenTK;
+using System;
 
 namespace MyGL
 {
     /// <summary>
     /// Абстрактный класс, представляющий собой источник света на сцене.
     /// </summary>
-    public abstract class LightSource : LightComponents
+    public abstract class LightSource : LightComponents, IDisposable
     {
+        private bool disposedValue;
+
         /// <summary>
         /// Фигура-источник света.
         /// </summary>
@@ -49,6 +52,24 @@ namespace MyGL
             Constant = constant;
             Linear = linear;
             Quadratic = quadratic;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    Source.Dispose();
+                }
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }
