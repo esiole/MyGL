@@ -25,12 +25,7 @@ namespace MyGL
 
             Vector3[] Normals = { normal, normal, normal, normal };
 
-            AddVertexGroup(new VertexArrayInfo(Coord, Normals));
-        }
-
-        public override void Draw()
-        {
-            VertexGroups[0].VAO.Draw(PrimitiveType.TriangleStrip);
+            AddVertexGroup(new VertexArrayInfo(Coord, Normals, PrimitiveType.TriangleStrip));
         }
     }
 }

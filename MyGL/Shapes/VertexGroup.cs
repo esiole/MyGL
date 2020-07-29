@@ -17,6 +17,7 @@ namespace MyGL
 
         public VertexArrayObject VAO { get; private set; }
         private List<VertexBufferObject> VBO { get; set; }
+        public PrimitiveType DrawType { get; private set; }
 
         public VertexGroup(VertexArrayInfo info)
         {
@@ -30,13 +31,12 @@ namespace MyGL
                 VAO.AttachVBO(i, VBO[i], 3, VertexAttribPointerType.Float, Vector3.SizeInBytes, 0);
                 i++;
             }
-            //for (int i = 0; i < VAO.Length; i++)
-            //{
-            //    VAO[i] = new VertexArrayObject(value[3 * i].Length);
-            //    VAO[i].AttachVBO(0, VBO[3 * i], 3, VertexAttribPointerType.Float, Vector3.SizeInBytes, 0);      // координаты
-            //    VAO[i].AttachVBO(1, VBO[3 * i + 1], 3, VertexAttribPointerType.Float, Vector3.SizeInBytes, 0);  // цвета
-            //    VAO[i].AttachVBO(2, VBO[3 * i + 2], 3, VertexAttribPointerType.Float, Vector3.SizeInBytes, 0);  // нормали
-            //}
+            DrawType = info.DrawType;
+        }
+
+        public void Draw()
+        {
+            VAO.Draw(DrawType);
         }
 
         protected virtual void Dispose(bool disposing)

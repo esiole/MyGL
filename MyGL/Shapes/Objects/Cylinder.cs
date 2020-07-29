@@ -23,28 +23,21 @@ namespace MyGL
                 CylinderNormals[i + 1] = (new Vector3(0.0f, 0.0f, 1.0f) + (CylinderCoord[i + 1] - (CenterBottom + new Vector3(0.0f, 0.0f, Height)))).Normalized();
 
             }
-            AddVertexGroup(new VertexArrayInfo(CylinderCoord, CylinderNormals));
+            AddVertexGroup(new VertexArrayInfo(CylinderCoord, CylinderNormals, PrimitiveType.TriangleStrip));
             Vector3[] BottomCoord = Drawing.Disc(CenterBottom, Radius);
             Vector3[] BottomNormals = new Vector3[BottomCoord.Length];
             for (int i = 0; i < BottomNormals.Length; i++)
             {
                 BottomNormals[i] = new Vector3(0.0f, 0.0f, -1.0f);
             }
-            AddVertexGroup(new VertexArrayInfo(BottomCoord, BottomNormals));
+            AddVertexGroup(new VertexArrayInfo(BottomCoord, BottomNormals, PrimitiveType.TriangleFan));
             Vector3[] HeadCoord = Drawing.Disc(CenterBottom + new Vector3(0.0f, 0.0f, Height), Radius);
             Vector3[] HeadNormals = new Vector3[HeadCoord.Length];
             for (int i = 0; i < HeadNormals.Length; i++)
             {
                 HeadNormals[i] = new Vector3(0.0f, 0.0f, 1.0f);
             }
-            AddVertexGroup(new VertexArrayInfo(HeadCoord, HeadNormals));
-        }
-
-        public override void Draw()
-        {
-            VertexGroups[0].VAO.Draw(PrimitiveType.TriangleStrip);
-            VertexGroups[1].VAO.Draw(PrimitiveType.TriangleFan);
-            VertexGroups[2].VAO.Draw(PrimitiveType.TriangleFan);
+            AddVertexGroup(new VertexArrayInfo(HeadCoord, HeadNormals, PrimitiveType.TriangleFan));
         }
     }
 }

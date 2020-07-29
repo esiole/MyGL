@@ -22,22 +22,14 @@ namespace MyGL
             {
                 ConeNormals[i] = (ConeCoord[i] - CenterBottom).Normalized();
             }
-            AddVertexGroup(new VertexArrayInfo(ConeCoord, ConeNormals));
+            AddVertexGroup(new VertexArrayInfo(ConeCoord, ConeNormals, PrimitiveType.TriangleFan));
             Vector3[] ConeBottomCoord = Drawing.Disc(new Vector3(0.0f, 0.0f, 0.0f), Radius);
             Vector3[] ConeBottomNormals = new Vector3[ConeBottomCoord.Length];
             for (int i = 0; i < ConeBottomNormals.Length; i++)
             {
                 ConeBottomNormals[i] = new Vector3(0.0f, 0.0f, -1.0f);
             }
-            AddVertexGroup(new VertexArrayInfo(ConeBottomCoord, ConeBottomNormals));
-        }
-
-        public override void Draw()
-        {
-            foreach (var e in VertexGroups.Select(group => group.VAO))
-            {
-                e.Draw(PrimitiveType.TriangleFan);
-            }
+            AddVertexGroup(new VertexArrayInfo(ConeBottomCoord, ConeBottomNormals, PrimitiveType.TriangleFan));
         }
     }
 }

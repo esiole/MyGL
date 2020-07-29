@@ -41,15 +41,7 @@ namespace MyGL
                 CubeNormals[i] = (CubeCoord[i] - Center).Normalized();
             }
 
-            AddVertexGroup(new VertexArrayInfo(CubeCoord, CubeNormals));
-        }
-
-        public override void Draw()
-        {
-            foreach (var e in VertexGroups.Select(group => group.VAO))
-            {
-                e.Draw(PrimitiveType.Quads);
-            }
+            AddVertexGroup(new VertexArrayInfo(CubeCoord, CubeNormals, PrimitiveType.Quads));
         }
     }
 }

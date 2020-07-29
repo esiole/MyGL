@@ -27,7 +27,13 @@ namespace MyGL
             else Model = Matrix4.Identity;
         }
 
-        public abstract void Draw();
+        public virtual void Draw()
+        {
+            foreach (var e in VertexGroups)
+            {
+                e.Draw();
+            }
+        }
 
         protected void AddVertexGroup(VertexArrayInfo info)
         {

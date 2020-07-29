@@ -29,19 +29,7 @@ namespace MyGL
             {
                 AxisNormal[i] = new Vector3(0.0f, 0.0f, 1.0f);
             }
-            AddVertexGroup(new VertexArrayInfo(AxisCoord, AxisNormal));
-        }
-
-        public override void Draw()
-        {
-            //foreach (VertexArrayObject element in VAO)
-            //{
-            //    element.Draw(PrimitiveType.Lines);
-            //}
-            foreach (var e in VertexGroups.Select(group => group.VAO))
-            {
-                e.Draw(PrimitiveType.Lines);
-            }
+            AddVertexGroup(new VertexArrayInfo(AxisCoord, AxisNormal, PrimitiveType.Lines));
         }
     }
 }
