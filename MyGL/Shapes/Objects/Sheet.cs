@@ -14,10 +14,9 @@ namespace MyGL
     public class Sheet : Shape
     {
         public Vector3 normall;
-        public Sheet(Vector3 LeftBottom, Vector3 RightBottom, Vector3 LeftUp, Vector3 RightUp, Material material, Matrix4 model) : base(3, 1, material, model)
+        public Sheet(Vector3 LeftBottom, Vector3 RightBottom, Vector3 LeftUp, Vector3 RightUp, Material material, Matrix4 model) : base(material, model)
         {
             Vector3[] Coord = { LeftBottom, RightBottom, LeftUp, RightUp };
-            Vector3[] Color = { new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f) };
 
             Vector3 first = RightUp - LeftBottom;
             Vector3 second = LeftUp - RightBottom;
@@ -26,12 +25,12 @@ namespace MyGL
 
             Vector3[] Normals = { normal, normal, normal, normal };
 
-            CreateBuffers(new Vector3[][] { Coord, Color, Normals });
+            AddVertexGroup(new VertexArrayInfo(Coord, Normals));
         }
 
         public override void Draw()
         {
-            VAO[0].Draw(PrimitiveType.TriangleStrip);
+            VertexGroups[0].VAO.Draw(PrimitiveType.TriangleStrip);
         }
     }
 }

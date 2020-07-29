@@ -65,12 +65,14 @@
     <Compile Include="Shaders\Shader.cs" />
     <Compile Include="Shaders\ShaderCompileException.cs" />
     <Compile Include="Shaders\Sources\PhongShaderSource.cs" />
-    <Compile Include="Shapes\Cone.cs" />
-    <Compile Include="Shapes\CoordAxis.cs" />
-    <Compile Include="Shapes\Cube.cs" />
-    <Compile Include="Shapes\Cylinder.cs" />
+    <Compile Include="Shapes\Objects\Cone.cs" />
+    <Compile Include="Shapes\Objects\CoordAxis.cs" />
+    <Compile Include="Shapes\Objects\Cube.cs" />
+    <Compile Include="Shapes\Objects\Cylinder.cs" />
     <Compile Include="Shapes\Shape.cs" />
-    <Compile Include="Shapes\Sheet.cs" />
+    <Compile Include="Shapes\Objects\Sheet.cs" />
+    <Compile Include="Shapes\VertexArrayInfo.cs" />
+    <Compile Include="Shapes\VertexGroup.cs" />
     <Compile Include="VertexArrayObject.cs" />
     <Compile Include="VertexBufferObject.cs" />
   </ItemGroup>

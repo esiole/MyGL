@@ -26,7 +26,7 @@ namespace MyGL
             GL.BufferData(Type, data.Length * sizeof(float), data, BufferUsageHint.StaticDraw);
         }
 
-        public VertexBufferObject(BufferTarget type, Vector3[] data)
+        public VertexBufferObject(Vector3[] data, BufferTarget type = BufferTarget.ArrayBuffer)
         {
             Type = type;
             Handle = GL.GenBuffer();

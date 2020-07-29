@@ -10,21 +10,18 @@
             #version 330 core
 
             layout (location = 0) in vec3 aPosition;
-            layout (location = 1) in vec3 aColor;
-            layout (location = 2) in vec3 aNormal;
+            layout (location = 1) in vec3 aNormal;
 
             uniform mat4 model;
             uniform mat4 view;
             uniform mat4 projection;
             
             varying vec3 FragPos;
-            varying vec3 Color;
             varying vec3 Normal;
             
             void main()
             {
                 gl_Position = projection * view * model * vec4(aPosition, 1.0);
-                Color = aColor;
                 Normal = aNormal * mat3(transpose(inverse(model)));
                 FragPos = vec3(model * vec4(aPosition, 1.0));
             }
@@ -92,7 +89,6 @@
                     float quadratic;
                 }};
 
-                varying vec3 Color; 
                 varying vec3 Normal;
                 varying vec3 FragPos;
 

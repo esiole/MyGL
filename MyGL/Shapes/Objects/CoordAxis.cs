@@ -13,7 +13,7 @@ namespace MyGL
 {
     public class CoordAxis : Shape
     {
-        public CoordAxis(float Length, Material material, Matrix4 model) : base(3, 1, material, model)
+        public CoordAxis(float Length, Material material, Matrix4 model) : base(material, model)
         {
             Vector3[] AxisCoord =
             {
@@ -24,29 +24,23 @@ namespace MyGL
                 new Vector3(0.0f, Length, 0.0f), new Vector3(0.02f, 0.98f, 0.0f), new Vector3(0.0f, Length, 0.0f), new Vector3(-0.02f, 0.98f, 0.0f),
                 new Vector3(0.0f, 0.0f, Length), new Vector3(0.0f, 0.02f, 0.98f), new Vector3(0.0f, 0.0f, Length), new Vector3(0.0f, -0.02f, 0.98f)
             };
-            Vector3[] AxisColor =
-            {
-                new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f),
-                new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f),
-                new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f),
-                new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f),
-                new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f),
-                new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f)
-            };
             Vector3[] AxisNormal = new Vector3[AxisCoord.Length];
             for (int i = 0; i < AxisNormal.Length; i++)
             {
                 AxisNormal[i] = new Vector3(0.0f, 0.0f, 1.0f);
             }
-
-            CreateBuffers(new Vector3[][] { AxisCoord, AxisColor, AxisNormal });
+            AddVertexGroup(new VertexArrayInfo(AxisCoord, AxisNormal));
         }
 
         public override void Draw()
         {
-            foreach (VertexArrayObject element in VAO)
+            //foreach (VertexArrayObject element in VAO)
+            //{
+            //    element.Draw(PrimitiveType.Lines);
+            //}
+            foreach (var e in VertexGroups.Select(group => group.VAO))
             {
-                element.Draw(PrimitiveType.Lines);
+                e.Draw(PrimitiveType.Lines);
             }
         }
     }
