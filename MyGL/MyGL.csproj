@@ -72,8 +72,8 @@
     <Compile Include="Shapes\Objects\Sheet.cs" />
     <Compile Include="Shapes\VertexArrayInfo.cs" />
     <Compile Include="Shapes\VertexGroup.cs" />
-    <Compile Include="VertexArrayObject.cs" />
-    <Compile Include="VertexBufferObject.cs" />
+    <Compile Include="Shapes\VertexArrayObject.cs" />
+    <Compile Include="Shapes\VertexBufferObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="OpenTK.dll.config" />

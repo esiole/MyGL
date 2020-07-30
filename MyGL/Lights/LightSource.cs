@@ -54,6 +54,10 @@ namespace MyGL
             Quadratic = quadratic;
         }
 
+        /// <summary>
+        /// Освободить выделенные ресурсы на источник света.
+        /// </summary>
+        /// <param name="disposing">Вызван ли метод Dispose вручную.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -66,6 +70,9 @@ namespace MyGL
             }
         }
 
+        /// <summary>
+        /// Освободить выделенные ресурсы на источник света.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
