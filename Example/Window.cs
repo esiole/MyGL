@@ -1,18 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
-
 using OpenTK;
-using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Input;
 using MyGL;
-using System.Globalization;
-using System.Threading;
 
 namespace Example 
 {
@@ -27,12 +19,11 @@ namespace Example
         private float fov = 45.0f;                  // угол просмотра перспективной проекции
         private bool isOrto = false;                // выбранная проекция
 
-        private Vector3 LightPos;                   // позиция источника света
         private Scene GraphicScene;
 
-        private GLControl Canvas;
-        private ComboBox comboBox1;
-        private ToolStripLabel status;
+        public readonly GLControl Canvas;
+        public readonly ComboBox ComboBoxProjection;
+        public readonly ToolStripLabel Status;
 
         public const string WindowFontName = "Microsoft Sans Serif";
         public const Single WindowFontSize = 14F;
@@ -43,37 +34,75 @@ namespace Example
             {
                 Dock = DockStyle.Fill,
             };
-            this.Canvas.Load += new System.EventHandler(this.Canvas_Load);
-            this.Canvas.Paint += new System.Windows.Forms.PaintEventHandler(this.Canvas_Paint);
-            this.Canvas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Canvas_MouseDown);
-            this.Canvas.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Canvas_MouseMove);
-            this.Canvas.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Canvas_MouseUp);
-            this.Canvas.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Canvas_OnMouseWheel);
-            this.Canvas.Resize += new System.EventHandler(this.Canvas_Resize);
+            Canvas.Load += new EventHandler(CanvasLoad);
+            Canvas.Paint += new PaintEventHandler(CanvasPaint);
+            Canvas.Resize += (sender, e) => GL.Viewport(0, 0, Canvas.Width, Canvas.Height);
+            Canvas.MouseDown += (sender, e) =>
+            {
+                mouse = e.Location;
+                isMove = true;
+            };
+            Canvas.MouseMove += (sender, e) =>
+            {
+                if (isMove)
+                {
+                    float sensitivity = 0.0005f;
+                    xAxisRotation += (180 * (e.Location.X - mouse.X)) / (float)Canvas.Width * sensitivity;
+                    yAxisRotation += (180 * (e.Location.Y - mouse.Y)) / (float)Canvas.Height * sensitivity;
+                }
+                Canvas.Invalidate();
+            };
+            Canvas.MouseUp += (sender, e) => isMove = false;
+            Canvas.MouseWheel += (sender, e) =>
+            {
+                float sensitivity = 0.01f;
+                fov -= e.Delta * sensitivity;
+                if (fov >= 45.0f)
+                {
+                    fov = 45.0f;
+                }
+                if (fov <= 1.0f)
+                {
+                    fov = 1.0f;
+                }
+                Canvas.Invalidate();
+            };
 
-            comboBox1 = new ComboBox
+            ComboBoxProjection = new ComboBox
             {
                 Dock = DockStyle.Fill,
                 DropDownStyle = ComboBoxStyle.DropDownList,
             };
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            ComboBoxProjection.Items.AddRange(new string[] { "Перспективная", "Ортогональная" });
+            ComboBoxProjection.SelectedIndex = 0;
+            ComboBoxProjection.SelectedIndexChanged += (sender, e) =>
+            {
+                if (ComboBoxProjection.SelectedItem.ToString() == "Перспективная")
+                    isOrto = false;
+                if (ComboBoxProjection.SelectedItem.ToString() == "Ортогональная")
+                    isOrto = true;
+                Canvas.Invalidate();
+            };
 
             var table = new TableLayoutPanel();
             table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 80));
             table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20));
-            table.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+            table.RowStyles.Add(new RowStyle(SizeType.Percent, 10));
+            table.RowStyles.Add(new RowStyle(SizeType.Percent, 10));
+            table.RowStyles.Add(new RowStyle(SizeType.Percent, 80));
             table.Controls.Add(Canvas, 0, 0);
-            table.SetRowSpan(Canvas, 2);
-            table.Controls.Add(CreateTableLayoutForComboBox("Проекция:", comboBox1), 1, 0);
+            table.SetRowSpan(Canvas, 3);
+            table.Controls.Add(CreateLabel("Проекция:"), 1, 0);
+            table.Controls.Add(ComboBoxProjection, 1, 1);
             table.Dock = DockStyle.Fill;
             Controls.Add(table);
 
             var statusStrip = new StatusStrip();
-            status = new ToolStripLabel
+            Status = new ToolStripLabel
             {
                 Text = "Загрузка"
             };
-            statusStrip.Items.Add(status);
+            statusStrip.Items.Add(Status);
             statusStrip.RightToLeft = RightToLeft.Yes;
             Controls.Add(statusStrip);
 
@@ -83,11 +112,6 @@ namespace Example
             WindowState = FormWindowState.Maximized;
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Example";
-
-            comboBox1.Items.AddRange(new string[] { "Перспективная", "Ортогональная" });
-            comboBox1.SelectedIndex = 0;
-
-            LightPos = new Vector3(0.0f, -0.5f, 0.5f);
         }
 
         private Label CreateLabel(string text)
@@ -99,38 +123,22 @@ namespace Example
             };
         }
 
-        private TableLayoutPanel CreateTableLayoutForComboBox(string headText, ComboBox box)
-        {
-            var tableBox = new TableLayoutPanel();
-            tableBox.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            tableBox.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
-            tableBox.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
-            tableBox.Controls.Add(CreateLabel(headText), 0, 0);
-            tableBox.Controls.Add(box, 0, 1);
-            tableBox.Dock = DockStyle.Fill;
-            return tableBox;
-        }
-
-        private void Canvas_Load(object sender, EventArgs e)
+        private void CanvasLoad(object sender, EventArgs e)
         {
             GL.ClearColor(0.59f, 0.59f, 0.59f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
 
             var LightPos = new Vector3(0.0f, -0.5f, 0.5f);
-            var LightDirection = new Vector3(-0.2f, 0.45f, 0.0f) - LightPos;
-            var LightOffsetPos = new Vector3(0.0f, -0.5f, 0.5f);
 
             var pointLight = new PointLight
             {
                 Ambient = new Vector3(0.2f, 0.4f, 0.6f),
                 Diffuse = new Vector3(0.8f, 0.9f, 0.5f),
                 Specular = new Vector3(1.0f, 0.8f, 1.0f),
-                Position = LightPos,
+                Position = new Vector3(0.0f, -0.5f, 0.5f),
                 Constant = 1.0f,
                 Linear = 0.35f,
                 Quadratic = 0.44f,
-
-                //Source = new Cube(LightPos, 0.05f, new Vector3(1.0f, 1.0f, 1.0f), new Material(), Matrix4.CreateTranslation(LightPos)),
                 Source = new Cube(LightPos, 0.05f, new Vector3(1.0f, 1.0f, 1.0f), Material.LightSource, Matrix4.Identity),
             };
             
@@ -190,20 +198,13 @@ namespace Example
             //GraphicScene.Add(spotLight1);
 
             isLoad = true;
-            status.Text = "Готово";
-        }
-
-        private void Canvas_Resize(object sender, EventArgs e)
-        {
-            GL.Viewport(0, 0, Canvas.Width, Canvas.Height);
+            Status.Text = "Готово";
         }
 
         [Obsolete]
-        private void Canvas_Paint(object sender, PaintEventArgs e)
+        private void CanvasPaint(object sender, PaintEventArgs e)
         {
             if (!isLoad) return;
-            Matrix4 model = Matrix4.Identity;
-            //Matrix4 light = Matrix4.Mult(Matrix4.CreateTranslation(this.light.LightOffsetPos - this.light.Position), model);
 
             Matrix4 left = Matrix4.CreateRotationX(xAxisRotation);
             Matrix4 right = Matrix4.CreateRotationY(yAxisRotation);
@@ -227,56 +228,6 @@ namespace Example
             Canvas.SwapBuffers();
         }
 
-        private void Canvas_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
-            mouse = e.Location;
-            isMove = true;
-        }
-
-        private void Canvas_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
-            if (isMove)
-            {
-                float sensitivity = 0.0005f;
-                xAxisRotation += (180 * (e.Location.X - mouse.X)) / (float)Canvas.Width * sensitivity;
-                yAxisRotation += (180 * (e.Location.Y - mouse.Y)) / (float)Canvas.Height * sensitivity;
-            }
-            Canvas.Invalidate();
-        }
-
-        private void Canvas_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
-            isMove = false;
-        }
-
-        private void Canvas_OnMouseWheel(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
-            float sensitivity = 0.01f;
-            fov -= e.Delta * sensitivity;
-            if (fov >= 45.0f)
-            {
-                fov = 45.0f;
-            }
-            if (fov <= 1.0f)
-            {
-                fov = 1.0f;
-            }
-            Canvas.Invalidate();
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (comboBox1.SelectedItem.ToString() == "Перспективная")
-            {
-                isOrto = false;
-            }
-            if (comboBox1.SelectedItem.ToString() == "Ортогональная")
-            {
-                isOrto = true;
-            }
-            Canvas.Invalidate();
-        }
-
         protected override void Dispose(bool fromDisposeMethod)
         {
             if (!isDisposed)
@@ -285,8 +236,6 @@ namespace Example
                 {
                     GraphicScene.Dispose();
                 }
-                // тут удаление неуправляемых ресурсов
-                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
                 isDisposed = true;
                 base.Dispose(fromDisposeMethod);
             }
