@@ -49,13 +49,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Drawing.cs" />
-    <Compile Include="Parameters\LightSource.cs" />
-    <Compile Include="Parameters\PointLight.cs" />
-    <Compile Include="Parameters\Temp.cs" />
-    <Compile Include="Parameters\DirectionLight.cs" />
-    <Compile Include="Parameters\Material.cs" />
-    <Compile Include="Parameters\LightComponents.cs" />
-    <Compile Include="Parameters\SpotLight.cs" />
+    <Compile Include="Lights\LightSource.cs" />
+    <Compile Include="Lights\PointLight.cs" />
+    <Compile Include="Lights\DirectionLight.cs" />
+    <Compile Include="Lights\Material.cs" />
+    <Compile Include="Lights\LightComponents.cs" />
+    <Compile Include="Lights\SpotLight.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="Shaders\ShaderController.cs" />

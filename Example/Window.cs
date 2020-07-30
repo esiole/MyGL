@@ -26,17 +26,12 @@ namespace Example
         private float yAxisRotation = 0.0f;
         private float fov = 45.0f;                  // угол просмотра перспективной проекции
         private bool isOrto = false;                // выбранная проекция
-        private Temp light;
 
         private Vector3 LightPos;                   // позиция источника света
-        private Vector3 LightDirection;             // направление прожектора
-        private float isSpotlight;                  // прожектор (> 0) или точечный источник (< 0)
-        private Vector3 LightOffsetPos;             // смещение положения источника света
         private Scene GraphicScene;
 
         private GLControl Canvas;
         private ComboBox comboBox1;
-        private ComboBox comboBox2;
         private ToolStripLabel status;
 
         public const string WindowFontName = "Microsoft Sans Serif";
@@ -63,33 +58,13 @@ namespace Example
             };
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
 
-            comboBox2 = new ComboBox
-            {
-                Dock = DockStyle.Fill,
-                DropDownStyle = ComboBoxStyle.DropDownList,
-            };
-            this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
-
-            var textBox1 = CreateTextBox(new Action<float>(value => light.SetDirectionVector(x: value)));
-            var textBox2 = CreateTextBox(new Action<float>(value => light.SetDirectionVector(y: value)));
-            var textBox3 = CreateTextBox(new Action<float>(value => light.SetDirectionVector(z: value)));
-            var textBox4 = CreateTextBox(new Action<float>(value => light.SetLightOffsetPos(x: value)));
-            var textBox5 = CreateTextBox(new Action<float>(value => light.SetLightOffsetPos(y: value)));
-            var textBox6 = CreateTextBox(new Action<float>(value => light.SetLightOffsetPos(z: value)));
-
             var table = new TableLayoutPanel();
             table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 80));
             table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20));
-            table.RowStyles.Add(new RowStyle(SizeType.Percent, 25));
-            table.RowStyles.Add(new RowStyle(SizeType.Percent, 25));
-            table.RowStyles.Add(new RowStyle(SizeType.Percent, 25));
-            table.RowStyles.Add(new RowStyle(SizeType.Percent, 25));
+            table.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
             table.Controls.Add(Canvas, 0, 0);
-            table.SetRowSpan(Canvas, 4);
+            table.SetRowSpan(Canvas, 2);
             table.Controls.Add(CreateTableLayoutForComboBox("Проекция:", comboBox1), 1, 0);
-            table.Controls.Add(CreateTableLayoutForCoord("Направление прожектора:", textBox1, textBox2, textBox3), 1, 1);
-            table.Controls.Add(CreateTableLayoutForComboBox("Источник света:", comboBox2), 1, 2);
-            table.Controls.Add(CreateTableLayoutForCoord("Координаты лампы:", textBox4, textBox5, textBox6), 1, 3);
             table.Dock = DockStyle.Fill;
             Controls.Add(table);
 
@@ -111,17 +86,8 @@ namespace Example
 
             comboBox1.Items.AddRange(new string[] { "Перспективная", "Ортогональная" });
             comboBox1.SelectedIndex = 0;
-            comboBox2.Items.AddRange(new string[] { "Прожектор", "Точечный" });
-            comboBox2.SelectedIndex = 0;
 
             LightPos = new Vector3(0.0f, -0.5f, 0.5f);
-
-            textBox1.Text = "-0,2";
-            textBox2.Text = "0,45";
-            textBox3.Text = "0,0";
-            textBox4.Text = LightPos.X.ToString();
-            textBox5.Text = LightPos.Y.ToString();
-            textBox6.Text = LightPos.Z.ToString();
         }
 
         private Label CreateLabel(string text)
@@ -131,28 +97,6 @@ namespace Example
                 Dock = DockStyle.Fill,
                 Text = text,
             };
-        }
-
-        private TableLayoutPanel CreateTableLayoutForCoord(string headText, TextBox xBox, TextBox yBox, TextBox zBox)
-        {
-            var label = CreateLabel(headText);
-            var tableCoord = new TableLayoutPanel();
-            tableCoord.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
-            tableCoord.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
-            tableCoord.RowStyles.Add(new RowStyle(SizeType.Percent, 25));
-            tableCoord.RowStyles.Add(new RowStyle(SizeType.Percent, 25));
-            tableCoord.RowStyles.Add(new RowStyle(SizeType.Percent, 25));
-            tableCoord.RowStyles.Add(new RowStyle(SizeType.Percent, 25));
-            tableCoord.Controls.Add(label, 0, 0);
-            tableCoord.SetColumnSpan(label, 2);
-            tableCoord.Controls.Add(CreateLabel("X:"), 0, 1);
-            tableCoord.Controls.Add(xBox, 1, 1);
-            tableCoord.Controls.Add(CreateLabel("Y:"), 0, 2);
-            tableCoord.Controls.Add(yBox, 1, 2);
-            tableCoord.Controls.Add(CreateLabel("Z:"), 0, 3);
-            tableCoord.Controls.Add(zBox, 1, 3);
-            tableCoord.Dock = DockStyle.Fill;
-            return tableCoord;
         }
 
         private TableLayoutPanel CreateTableLayoutForComboBox(string headText, ComboBox box)
@@ -167,36 +111,14 @@ namespace Example
             return tableBox;
         }
 
-        private TextBox CreateTextBox(Action<float> changeLightingVector)
-        {
-            var textBox = new TextBox
-            {
-                Dock = DockStyle.Fill,
-            };
-            textBox.TextChanged += (sender, e) =>
-            {
-                try
-                {
-                    float value = float.Parse((sender as TextBox).Text);
-                    if (light != null) changeLightingVector(value);
-                    status.Text = "Готово";
-                }
-                catch
-                {
-                    status.Text = "Введённое значение не является числом";
-                }
-            };
-            return textBox;
-        }
-
         private void Canvas_Load(object sender, EventArgs e)
         {
             GL.ClearColor(0.59f, 0.59f, 0.59f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
 
-            LightDirection = new Vector3(-0.2f, 0.45f, 0.0f) - LightPos;
-            isSpotlight = 1.0f;
-            LightOffsetPos = new Vector3(0.0f, -0.5f, 0.5f);
+            var LightPos = new Vector3(0.0f, -0.5f, 0.5f);
+            var LightDirection = new Vector3(-0.2f, 0.45f, 0.0f) - LightPos;
+            var LightOffsetPos = new Vector3(0.0f, -0.5f, 0.5f);
 
             var pointLight = new PointLight
             {
@@ -267,7 +189,6 @@ namespace Example
             //GraphicScene.Add(spotLight);
             //GraphicScene.Add(spotLight1);
 
-            //light.ParametersChange += () => Canvas.Invalidate();
             isLoad = true;
             status.Text = "Готово";
         }
@@ -352,19 +273,6 @@ namespace Example
             if (comboBox1.SelectedItem.ToString() == "Ортогональная")
             {
                 isOrto = true;
-            }
-            Canvas.Invalidate();
-        }
-
-        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (comboBox2.SelectedItem.ToString() == "Прожектор")
-            {
-                isSpotlight = 1.0f;
-            }
-            if (comboBox2.SelectedItem.ToString() == "Точечный")
-            {
-                isSpotlight = -1.0f;
             }
             Canvas.Invalidate();
         }
