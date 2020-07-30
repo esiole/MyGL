@@ -1,61 +1,86 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Input;
 
 namespace MyGL
 {
+    /// <summary>
+    /// Представляет собой буфер вершин в памяти GPU.
+    /// </summary>
     public class VertexBufferObject : IDisposable
     {
         private bool disposedValue;
 
-        public int Handle { get; private set; }
+        private int Id { get; set; }
+
+        /// <summary>
+        /// Тип объекта буфера.
+        /// </summary>
         public BufferTarget Type { get; private set; }
 
-        public VertexBufferObject(BufferTarget type, float[] data)
+        /// <summary>
+        /// Создаёт буфер вершин.
+        /// </summary>
+        /// <param name="data">Данные вершин.</param>
+        /// <param name="type">Тип объекта буфера.</param>
+        public VertexBufferObject(float[] data, BufferTarget type = BufferTarget.ArrayBuffer) : this(type)
         {
-            Type = type;
-            Handle = GL.GenBuffer();
-            Use();
             GL.BufferData(Type, data.Length * sizeof(float), data, BufferUsageHint.StaticDraw);
         }
 
-        public VertexBufferObject(Vector3[] data, BufferTarget type = BufferTarget.ArrayBuffer)
+        /// <summary>
+        /// Создаёт буфер вершин.
+        /// </summary>
+        /// <param name="data">Данные вершин.</param>
+        /// <param name="type">Тип объекта буфера.</param>
+        public VertexBufferObject(Vector3[] data, BufferTarget type = BufferTarget.ArrayBuffer) : this(type)
         {
-            Type = type;
-            Handle = GL.GenBuffer();
-            Use();
             GL.BufferData(Type, data.Length * Vector3.SizeInBytes, data, BufferUsageHint.StaticDraw);
         }
 
-        public void Use()
+        private VertexBufferObject(BufferTarget type)
         {
-            GL.BindBuffer(Type, Handle);
+            Type = type;
+            Id = GL.GenBuffer();
+            Use();
         }
 
+        /// <summary>
+        /// Связать буфер.
+        /// </summary>
+        public void Use()
+        {
+            GL.BindBuffer(Type, Id);
+        }
+
+        /// <summary>
+        /// Освободить выделенные буфером ресурсы.
+        /// </summary>
+        /// <param name="disposing">Вызывается ли метод Dispose вручную.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
-                GL.DeleteBuffer(Handle);
+                GL.DeleteBuffer(Id);
                 disposedValue = true;
             }
         }
 
+        /// <summary>
+        /// Финализатор, вызывающий Dispose метод.
+        /// </summary>
         ~VertexBufferObject()
         {
-            //if (GraphicsContext.CurrentContext != null && !GraphicsContext.CurrentContext.IsDisposed)
-            //{
+            if (GraphicsContext.CurrentContext != null && !GraphicsContext.CurrentContext.IsDisposed)
+            {
                 Dispose(false);
-            //}
+            }
         }
 
+        /// <summary>
+        /// Освободить выделенные буфером ресурсы.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);

@@ -1,24 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using OpenTK;
-using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Input;
 
 namespace MyGL
 {
+    /// <summary>
+    /// Представляет собой массив вершин для отрисовки.
+    /// </summary>
     public class VertexGroup : IDisposable
     {
         private bool disposedValue;
 
-        public VertexArrayObject VAO { get; private set; }
+        private VertexArrayObject VAO { get; set; }
         private List<VertexBufferObject> VBO { get; set; }
+
+        /// <summary>
+        /// Примитив для отрисовки массива вершин.
+        /// </summary>
         public PrimitiveType DrawType { get; private set; }
 
+        /// <summary>
+        /// Создаёт массив вершин для отрисовки.
+        /// </summary>
+        /// <param name="info">Атрибуты вершин.</param>
         public VertexGroup(VertexArrayInfo info)
         {
             // пройтись по всем свойствам объекта; рефлексия?
@@ -34,11 +39,18 @@ namespace MyGL
             DrawType = info.DrawType;
         }
 
+        /// <summary>
+        /// Отрисовать массив вершин.
+        /// </summary>
         public void Draw()
         {
             VAO.Draw(DrawType);
         }
 
+        /// <summary>
+        /// Освободить выделенные ресурсы.
+        /// </summary>
+        /// <param name="disposing">Вызывается ли метод Dispose вручную.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -55,6 +67,9 @@ namespace MyGL
             }
         }
 
+        /// <summary>
+        /// Освободить выделенные ресурсы.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
