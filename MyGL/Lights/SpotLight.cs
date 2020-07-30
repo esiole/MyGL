@@ -1,4 +1,5 @@
 ﻿using OpenTK;
+using System;
 
 namespace MyGL
 {
@@ -7,6 +8,9 @@ namespace MyGL
     /// </summary>
     public sealed class SpotLight : LightSource
     {
+        private float cutOff;
+        private float outerCutOff;
+
         /// <summary>
         /// Направление прожектора.
         /// </summary>
@@ -15,12 +19,20 @@ namespace MyGL
         /// <summary>
         /// Внутренний косинус угла прожектора (угол отсечки).
         /// </summary>
-        public float CutOff { get; set; }
+        public float CutOff 
+        {
+            get => cutOff;
+            set => cutOff = CheckCos(value);
+        }
 
         /// <summary>
         /// Внешний косинус угла прожектора.
         /// </summary>
-        public float OuterCutOff { get; set; }
+        public float OuterCutOff 
+        {
+            get => outerCutOff;
+            set => outerCutOff = CheckCos(value);
+        }
 
         /// <summary>
         /// Создаёт прожектор со значениями свойств по умочанию.
@@ -49,6 +61,17 @@ namespace MyGL
             Direction = direction;
             CutOff = cutOff;
             OuterCutOff = outerCutOff;
+        }
+
+        /// <summary>
+        /// Проверяет, является ли переданное значение косинуса допустимым.
+        /// </summary>
+        /// <param name="cos">Косинус угла.</param>
+        /// <returns>Косинус угла, если он допустим, иначе будет выброшено ArgumentException.</returns>
+        private float CheckCos(float cos)
+        {
+            if (Math.Abs(cos) > 1.0f) throw new ArgumentException("Косинус больше единицы.");
+            else return cos;
         }
     }
 }
