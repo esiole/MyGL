@@ -3,98 +3,133 @@ using OpenTK;
 
 namespace MyGL
 {
+    /// <summary>
+    /// Представляет собой объект, создающий шейдер и управляющий им.
+    /// </summary>
     public sealed class ShaderController : IDisposable
     {
         private bool disposedValue;
-        private Shader shader;
         private int countPointLight = 0;
         private int countSpotLight = 0;
 
+        /// <summary>
+        /// Шейдер.
+        /// </summary>
+        public readonly Shader Shader;
+
+        /// <summary>
+        /// Создаёт шейдер из исходного кода.
+        /// </summary>
+        /// <param name="shaderSource"></param>
         public ShaderController(IShaderSource shaderSource)
         {
-            shader = new Shader(shaderSource);
-            shader.Use();
+            Shader = new Shader(shaderSource);
+            Shader.Use();
         }
 
+        /// <summary>
+        /// Включаёт влияние фонового направленного света.
+        /// </summary>
+        /// <param name="light">Направленный свет без источника.</param>
         public void EnableDirLight(DirectionLight light)
         {
-            shader.SetUniform3("dirLight.ambient", light.Ambient);
-            shader.SetUniform3("dirLight.diffuse", light.Diffuse);
-            shader.SetUniform3("dirLight.specular", light.Specular);
-            shader.SetUniform3("dirLight.direction", light.Direction);
+            Shader.SetUniform3("dirLight.ambient", light.Ambient);
+            Shader.SetUniform3("dirLight.diffuse", light.Diffuse);
+            Shader.SetUniform3("dirLight.specular", light.Specular);
+            Shader.SetUniform3("dirLight.direction", light.Direction);
         }
 
+        /// <summary>
+        /// Отключает влияние фонового направленного света. 
+        /// </summary>
         public void DisableDirLight()
         {
             EnableDirLight(new DirectionLight(new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f), 
                 new Vector3(1.0f, 1.0f, 1.0f), new Vector3(0.5f, 0.5f, 0.5f)));
         }
 
+        /// <summary>
+        /// Добавляет параметрв источника света в шейдер.
+        /// </summary>
+        /// <param name="light">Источник света.</param>
         public void AddLight(LightSource light)
         {
             if (light is PointLight) AddPointLight(light as PointLight);
             if (light is SpotLight) AddSpotLight(light as SpotLight);
         }
 
+        /// <summary>
+        /// Добавляет точечный источник света в шейдер.
+        /// </summary>
+        /// <param name="light">Точечный источник света.</param>
         private void AddPointLight(PointLight light)
         {
             AddLightSource(light, "pointLights", countPointLight);
             countPointLight++;
         }
 
+        /// <summary>
+        /// Добавляет прожектор в шейдер.
+        /// </summary>
+        /// <param name="light">Прожектор.</param>
         private void AddSpotLight(SpotLight light)
         {
             AddLightSource(light, "spotLights", countSpotLight);
-            shader.SetUniform3($"spotLights[{countSpotLight}].direction", light.Direction);
-            shader.SetUniform1($"spotLights[{countSpotLight}].cutOff", light.CutOff);
-            shader.SetUniform1($"spotLights[{countSpotLight}].outerCutOff", light.OuterCutOff);
+            Shader.SetUniform3($"spotLights[{countSpotLight}].direction", light.Direction);
+            Shader.SetUniform1($"spotLights[{countSpotLight}].cutOff", light.CutOff);
+            Shader.SetUniform1($"spotLights[{countSpotLight}].outerCutOff", light.OuterCutOff);
             countSpotLight++;
         }
 
+        /// <summary>
+        /// Добавляет общие характеристики источника света в шейдер.
+        /// </summary>
+        /// <param name="light">Источник света.</param>
+        /// <param name="nameArrayInShader">Имя массива, куда добавляется источник.</param>
+        /// <param name="index">В какую позицию массива добавляется.</param>
         private void AddLightSource(LightSource light, string nameArrayInShader, int index)
         {
-            shader.SetUniform3($"{nameArrayInShader}[{index}].ambient", light.Ambient);
-            shader.SetUniform3($"{nameArrayInShader}[{index}].diffuse", light.Diffuse);
-            shader.SetUniform3($"{nameArrayInShader}[{index}].specular", light.Specular);
-            shader.SetUniform3($"{nameArrayInShader}[{index}].position", light.Position);
-            shader.SetUniform1($"{nameArrayInShader}[{index}].constant", light.Constant);
-            shader.SetUniform1($"{nameArrayInShader}[{index}].linear", light.Linear);
-            shader.SetUniform1($"{nameArrayInShader}[{index}].quadratic", light.Quadratic);
+            Shader.SetUniform3($"{nameArrayInShader}[{index}].ambient", light.Ambient);
+            Shader.SetUniform3($"{nameArrayInShader}[{index}].diffuse", light.Diffuse);
+            Shader.SetUniform3($"{nameArrayInShader}[{index}].specular", light.Specular);
+            Shader.SetUniform3($"{nameArrayInShader}[{index}].position", light.Position);
+            Shader.SetUniform1($"{nameArrayInShader}[{index}].constant", light.Constant);
+            Shader.SetUniform1($"{nameArrayInShader}[{index}].linear", light.Linear);
+            Shader.SetUniform1($"{nameArrayInShader}[{index}].quadratic", light.Quadratic);
         }
 
+        /// <summary>
+        /// Устанавливает необходмые uniform переменные для работы шейдера.
+        /// </summary>
+        /// <param name="view">Видовая матрица.</param>
+        /// <param name="projection">Матрица проекции.</param>
+        /// <param name="cameraPos">Позиция камеры.</param>
         public void PrepareDraw(Matrix4 view, Matrix4 projection, Vector3 cameraPos)
         {
-            SetViewMatrix(view);
-            SetProjectionMatrix(projection);
-            SetCameraPos(cameraPos);
+            Shader.SetUniformMatrix4("view", false, ref view);
+            Shader.SetUniformMatrix4("projection", false, ref projection);
+            Shader.SetUniform3("viewPos", cameraPos);
         }
 
-        public void SetViewMatrix(Matrix4 view)
-        {
-            shader.SetUniformMatrix4("view", false, view);
-        }
-
-        public void SetProjectionMatrix(Matrix4 projection)
-        {
-            shader.SetUniformMatrix4("projection", false, projection);
-        }
-
-        public void SetCameraPos(Vector3 cameraPos)
-        {
-            shader.SetUniform3("viewPos", cameraPos);
-        }
-
+        /// <summary>
+        /// Устанавливает модельную матрицу для отрисовки текущей фигуры.
+        /// </summary>
+        /// <param name="model">Модельная матрица.</param>
         public void SetModelMatrix(Matrix4 model)
         {
-            shader.SetUniformMatrix4("model", false, model);
+            Shader.SetUniformMatrix4("model", false, ref model);
         }
 
+        /// <summary>
+        /// Устанавливает материал текущей фигуры для отрисовки.
+        /// </summary>
+        /// <param name="material">Материал фигуры.</param>
         public void SetMaterial(Material material)
         {
-            shader.SetUniform3("material.ambient", material.Ambient);
-            shader.SetUniform3("material.diffuse", material.Diffuse);
-            shader.SetUniform3("material.specular", material.Specular);
-            shader.SetUniform1("material.shininess", material.Shininess);
+            Shader.SetUniform3("material.ambient", material.Ambient);
+            Shader.SetUniform3("material.diffuse", material.Diffuse);
+            Shader.SetUniform3("material.specular", material.Specular);
+            Shader.SetUniform1("material.shininess", material.Shininess);
         }
 
         private void Dispose(bool disposing)
@@ -103,12 +138,15 @@ namespace MyGL
             {
                 if (disposing)
                 {
-                    shader.Dispose();
+                    Shader.Dispose();
                 }
                 disposedValue = true;
             }
         }
 
+        /// <summary>
+        /// Освободить все выделенные контроллером ресурсы.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
