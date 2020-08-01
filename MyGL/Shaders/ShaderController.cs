@@ -20,10 +20,11 @@ namespace MyGL
         /// <summary>
         /// Создаёт шейдер из исходного кода.
         /// </summary>
-        /// <param name="shaderSource"></param>
-        public ShaderController(IShaderSource shaderSource)
+        /// <param name="vertexShaderSource">Исходный код вершинного шейдера.</param>
+        /// <param name="fragmentShaderSource">Исходный код фрагментного шейдера.</param>
+        public ShaderController(string vertexShaderSource, string fragmentShaderSource)
         {
-            Shader = new Shader(shaderSource);
+            Shader = new Shader(vertexShaderSource, fragmentShaderSource);
             Shader.Use();
         }
 

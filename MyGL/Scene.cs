@@ -19,12 +19,14 @@ namespace MyGL
         public DirectionLight DirectionLight { get; set; }
         public ShaderController Controller { get; private set; }
 
-        public Scene(IShaderSource shaderSource)
+        public Scene(IShaderSource shaderSource) : this(shaderSource.VertexShaderSource, shaderSource.FragmentShaderSource) { }
+
+        public Scene(string vertexShaderSource, string fragmentShaderSource)
         {
             Shapes = new List<Shape>();
             Lights = new List<LightSource>();
             DirectionLight = new DirectionLight();
-            Controller = new ShaderController(shaderSource);
+            Controller = new ShaderController(vertexShaderSource, fragmentShaderSource);
         }
 
         public void Add(Shape shape)
