@@ -17,14 +17,15 @@ namespace MyGL
 
         protected List<VertexGroup> VertexGroups { get; set; }
         public Material Material { get; set; }
+        public Vector3 Color { get; set; }
         public Matrix4 Model { get; set; }
 
-        public Shape(Material material, Matrix4? model = null)
+        public Shape(Material material, Vector3 color, Matrix4 model)
         {
             VertexGroups = new List<VertexGroup>();
             Material = material;
-            if (model.HasValue) Model = model.Value;
-            else Model = Matrix4.Identity;
+            Color = color;
+            Model = model;
         }
 
         public virtual void Draw()

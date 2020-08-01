@@ -139,7 +139,7 @@ namespace Example
                 Constant = 1.0f,
                 Linear = 0.35f,
                 Quadratic = 0.44f,
-                Source = new Cube(LightPos, 0.05f, new Vector3(1.0f, 1.0f, 1.0f), Material.LightSource, Matrix4.Identity),
+                Source = new Cube(LightPos, 0.05f, Material.LightSource, Matrix4.Identity),
             };
             
             var spotLight = new SpotLight
@@ -181,11 +181,11 @@ namespace Example
                 Shapes = new List<Shape>
                 {
                     new Cone(new Vector3(0.0f, 0.0f, 0.0f), 0.1f, 0.3f, Material.Ruby, conus),
-                    new Cube(new Vector3(0.0f, 0.0f, 0.15f), 0.3f, new Vector3(1.0f, 0.0f, 1.0f), Material.Pearl, cube),
+                    new Cube(new Vector3(0.0f, 0.0f, 0.15f), 0.3f, Material.Pearl, cube),
                     new Cylinder(new Vector3(0.0f, 0.0f, 0.0f), 0.1f, 0.3f, Material.Bronze, cylinder),
-                    new Sheet(new Vector3(1.0f, -1.0f, 0.0f), new Vector3(1.0f, 1.0f, 0.0f), new Vector3(-1.0f, -1.0f, 0.0f), new Vector3(-1.0f, 1.0f, 0.0f), Material.Gold, Matrix4.Identity),
-                    new Sheet(new Vector3(1.0f, 1.0f, 0.0f), new Vector3(1.0f, -1.0f, 0.0f), new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, -1.0f, 1.0f), Material.Gold, Matrix4.Identity),
-                    new Sheet(new Vector3(-1.0f, 1.0f, 0.0f), new Vector3(1.0f, 1.0f, 0.0f), new Vector3(-1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f), Material.Gold, Matrix4.Identity),
+                    new Sheet(new Vector3(1.0f, -1.0f, 0.0f), new Vector3(1.0f, 1.0f, 0.0f), new Vector3(-1.0f, -1.0f, 0.0f), new Vector3(-1.0f, 1.0f, 0.0f), Material.YellowPlastic, Matrix4.Identity),
+                    new Sheet(new Vector3(1.0f, 1.0f, 0.0f), new Vector3(1.0f, -1.0f, 0.0f), new Vector3(1.0f, 1.0f, 1.0f), new Vector3(1.0f, -1.0f, 1.0f), Material.YellowPlastic, Matrix4.Identity),
+                    new Sheet(new Vector3(-1.0f, 1.0f, 0.0f), new Vector3(1.0f, 1.0f, 0.0f), new Vector3(-1.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f), Material.YellowPlastic, Matrix4.Identity),
                 },
                 //Lights = new List<LightSource>
                 //{
